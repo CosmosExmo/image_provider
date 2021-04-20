@@ -214,13 +214,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  radial_menu:
-    dependency: "direct main"
-    description:
-      path: "/Users/emircanurfa/dev/flutter_packages/radial_menu"
-      relative: false
-    source: path
-    version: "0.0.1"
   sky_engine:
     dependency: transitive
     description: flutter

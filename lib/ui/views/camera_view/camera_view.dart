@@ -1,10 +1,10 @@
 import 'package:adv_camera/adv_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_provider/ui/views/camera_view/camera_viewmodel.dart';
+import 'package:image_provider/ui/views/widgets/radial_menu.dart';
 import 'package:image_provider/ui/views/widgets/spacing_widget.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:provider/provider.dart';
-import 'package:radial_menu/radial_menu.dart';
 
 class CameraView extends StatefulWidget {
   CameraView({Key key}) : super(key: key);

@@ -23,8 +23,6 @@ dependencies:
 
   animated_dialog_service:
     path: /Users/emircanurfa/dev/flutter_packages/animated_dialog_service
-  radial_menu:
-    path: /Users/emircanurfa/dev/flutter_packages/radial_menu
 
 dev_dependencies:
   flutter_test:
