@@ -45,16 +45,8 @@ class _CameraViewContent extends StatelessWidget {
           switch (orientation) {
             case NativeDeviceOrientation.landscapeLeft:
               return _LandscapeContent();
-              break;
             case NativeDeviceOrientation.landscapeRight:
               return _LandscapeContent();
-              break;
-            case NativeDeviceOrientation.portraitUp:
-              return _PortraitContent();
-              break;
-            case NativeDeviceOrientation.portraitDown:
-              return _PortraitContent();
-              break;
             default:
               return _PortraitContent();
           }
@@ -310,13 +302,10 @@ class _FlashToggleButton extends StatelessWidget {
     switch (type) {
       case FlashType.auto:
         return Icons.flash_auto;
-        break;
       case FlashType.on:
         return Icons.flash_on;
-        break;
       case FlashType.off:
         return Icons.flash_off;
-        break;
       default:
         return Icons.flash_auto;
     }
