@@ -1,31 +1,31 @@
 import 'package:adv_camera/adv_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_provider/app/enums.dart';
-import 'package:image_provider/models/image_export.dart';
-import 'package:image_provider/services/path_service.dart';
-import 'package:image_provider/services/permission_services.dart';
-import 'package:image_provider/utils/compress_image.dart';
+import 'package:image_provider/src/app/enums.dart';
+import 'package:image_provider/src/models/image_export.dart';
+import 'package:image_provider/src/services/path_service.dart';
+import 'package:image_provider/src/services/permission_services.dart';
+import 'package:image_provider/src/utils/compress_image.dart';
 
 class CameraViewModel with ChangeNotifier {
-  AdvCameraController _controller;
+  AdvCameraController? _controller;
 
-  ImageExport _imageExport;
+  ImageExport? _imageExport;
 
-  FlashType _flashType;
+  FlashType? _flashType;
 
-  String _lastImage;
+  String? _lastImage;
 
   final _permissionService = PermissionServices();
   final _pathService = PathService();
 
-  String _imageSavePath;
+  String? _imageSavePath;
 
   bool _hasCameraPermission = false;
 
-  AdvCameraController get controller => this._controller;
-  FlashType get flashType => this._flashType;
-  String get lastImage => this._lastImage;
+  AdvCameraController? get controller => this._controller;
+  FlashType? get flashType => this._flashType;
+  String? get lastImage => this._lastImage;
   bool get hasCameraPermission => this._hasCameraPermission;
 
   Future<CameraViewModel> get init async {
@@ -45,7 +45,7 @@ class CameraViewModel with ChangeNotifier {
   Future<void> setCameraController(AdvCameraController value) async {
     this._controller = value;
     if (_imageSavePath != null)
-      await this._controller.setSavePath(this._imageSavePath);
+      await this._controller!.setSavePath(this._imageSavePath!);
   }
 
   Future<void> captureImage() async {
@@ -56,7 +56,7 @@ class CameraViewModel with ChangeNotifier {
   Future<void> onCapture(String path) async {
     this._lastImage = path;
     final byteData = await getImageCompressed(RepositoryType.Camera, path);
-    this._imageExport.images.add(byteData);
+    this._imageExport!.images!.add(byteData);
     notifyListeners();
   }
 

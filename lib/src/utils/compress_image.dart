@@ -2,14 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_provider/app/enums.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:image_provider/src/app/enums.dart';
+import 'package:multi_image_picker2/multi_image_picker2.dart';
 
-Future<Uint8List> getImageCompressed(
+Future<Uint8List?> getImageCompressed(
   RepositoryType repositoryType,
   dynamic imageData,
 ) async {
-  Uint8List returnData;
+  late Uint8List returnData;
 
   if (repositoryType == RepositoryType.Camera) {
     returnData = File(imageData).readAsBytesSync();
@@ -24,14 +24,14 @@ Future<Uint8List> getImageCompressed(
   return compressedImage;
 }
 
-Future<List<int>> getUInt8List(Asset resimData) async {
+Future<Uint8List> getUInt8List(Asset resimData) async {
   List<int> uInt8List = [];
   ByteData byteData = await resimData.getByteData();
   uInt8List = byteData.buffer.asUint8List();
-  return uInt8List;
+  return uInt8List as Uint8List;
 }
 
-Future<Uint8List> compressList(Uint8List list) async {
+Future<Uint8List?> compressList(Uint8List list) async {
   try {
     var result = await FlutterImageCompress.compressWithList(
       list,

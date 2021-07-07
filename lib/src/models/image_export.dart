@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 
-import 'package:image_provider/app/enums.dart';
+import 'package:image_provider/src/app/enums.dart';
 
 class ImageExport {
-  final RepositoryType repositoryType;
-  List<Uint8List> images;
+  final RepositoryType? repositoryType;
+  List<Uint8List?>? images;
 
-  bool get hasImage => this.images != null && this.images.isNotEmpty;
+  bool get hasImage => this.images != null && this.images!.isNotEmpty;
 
   ImageExport({
     this.repositoryType,

@@ -1,13 +1,7 @@
-import 'package:adv_camera/adv_camera.dart';
-import 'package:flutter/material.dart';
-import 'package:image_provider/ui/views/camera_view/camera_viewmodel.dart';
-import 'package:image_provider/ui/views/widgets/radial_menu.dart';
-import 'package:image_provider/ui/views/widgets/spacing_widget.dart';
-import 'package:native_device_orientation/native_device_orientation.dart';
-import 'package:provider/provider.dart';
+part of image_provider;
 
 class CameraView extends StatefulWidget {
-  CameraView({Key key}) : super(key: key);
+  CameraView({Key? key}) : super(key: key);
 
   @override
   _CameraViewState createState() => _CameraViewState();
@@ -37,7 +31,7 @@ class _CameraViewState extends State<CameraView> {
 }
 
 class _CameraViewContent extends StatelessWidget {
-  const _CameraViewContent({Key key}) : super(key: key);
+  const _CameraViewContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +67,7 @@ class _CameraViewContent extends StatelessWidget {
 }
 
 class _NoPermissionView extends StatelessWidget {
-  const _NoPermissionView({Key key}) : super(key: key);
+  const _NoPermissionView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +82,7 @@ class _NoPermissionView extends StatelessWidget {
               Text(
                 "Kamerayı kullanabilmek için gerekli izinlerin verilmesi gerekmektedir!",
               ),
-              SpacingWidget(),
+              _SpacingWidget(),
               ElevatedButton(
                 onPressed:
                     context.read<CameraViewModel>().requestCameraPermission,
@@ -117,7 +111,7 @@ class _NoPermissionView extends StatelessWidget {
                       radius: 25.0,
                       backgroundColor: Colors.transparent,
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: () {},
                       child: Icon(
@@ -126,7 +120,7 @@ class _NoPermissionView extends StatelessWidget {
                         color: Colors.transparent,
                       ),
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: () =>
                           context.read<CameraViewModel>().returnData(context),
@@ -144,7 +138,7 @@ class _NoPermissionView extends StatelessWidget {
 }
 
 class _PortraitContent extends StatelessWidget {
-  const _PortraitContent({Key key}) : super(key: key);
+  const _PortraitContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -165,7 +159,7 @@ class _PortraitContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Selector<CameraViewModel, String>(
+                    Selector<CameraViewModel, String?>(
                       shouldRebuild: (a, b) => a != b,
                       selector: (_, model) => model.lastImage,
                       builder: (context, value, child) {
@@ -176,12 +170,12 @@ class _PortraitContent extends StatelessWidget {
                         );
                       },
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
                       child: Icon(Icons.camera, size: 70),
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: () =>
                           context.read<CameraViewModel>().returnData(context),
@@ -209,7 +203,7 @@ class _PortraitContent extends StatelessWidget {
 }
 
 class _LandscapeContent extends StatelessWidget {
-  const _LandscapeContent({Key key}) : super(key: key);
+  const _LandscapeContent({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +224,7 @@ class _LandscapeContent extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Selector<CameraViewModel, String>(
+                    Selector<CameraViewModel, String?>(
                       shouldRebuild: (a, b) => a != b,
                       selector: (_, model) => model.lastImage,
                       builder: (context, value, child) {
@@ -241,12 +235,12 @@ class _LandscapeContent extends StatelessWidget {
                         );
                       },
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
                       child: Icon(Icons.camera, size: 70),
                     ),
-                    SpacingWidget(),
+                    _SpacingWidget(),
                     InkWell(
                       onTap: () =>
                           context.read<CameraViewModel>().returnData(context),
@@ -275,11 +269,11 @@ class _LandscapeContent extends StatelessWidget {
 }
 
 class _FlashToggleButton extends StatelessWidget {
-  const _FlashToggleButton({Key key}) : super(key: key);
+  const _FlashToggleButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<CameraViewModel, FlashType>(
+    return Selector<CameraViewModel, FlashType?>(
       selector: (_, model) => model.flashType,
       builder: (context, value, widget) {
         return RadialMenu(
@@ -312,7 +306,7 @@ class _FlashToggleButton extends StatelessWidget {
     );
   }
 
-  IconData _getFlashIcon(FlashType type) {
+  IconData _getFlashIcon(FlashType? type) {
     switch (type) {
       case FlashType.auto:
         return Icons.flash_auto;
@@ -330,11 +324,11 @@ class _FlashToggleButton extends StatelessWidget {
 }
 
 class _CameraWidget extends StatelessWidget {
-  const _CameraWidget({Key key}) : super(key: key);
+  const _CameraWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<CameraViewModel, FlashType>(
+    return Selector<CameraViewModel, FlashType?>(
       selector: (_, model) => model.flashType,
       builder: (context, value, child) {
         return AdvCamera(
@@ -342,11 +336,25 @@ class _CameraWidget extends StatelessWidget {
           cameraPreviewRatio: CameraPreviewRatio.r16_9,
           cameraSessionPreset: CameraSessionPreset.photo,
           focusRectColor: Theme.of(context).primaryColor,
-          flashType: value,
+          flashType: value!,
           onCameraCreated: context.read<CameraViewModel>().setCameraController,
           onImageCaptured: context.read<CameraViewModel>().onCapture,
         );
       },
     );
+  }
+}
+
+class _SpacingWidget extends StatelessWidget {
+  final Axis axis;
+  const _SpacingWidget({Key? key, this.axis = Axis.vertical}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (axis == Axis.horizontal) {
+      return SizedBox(width: 30);
+    }
+
+    return SizedBox(height: 30);
   }
 }

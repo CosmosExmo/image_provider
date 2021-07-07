@@ -1,9 +1,4 @@
-import 'dart:math';
-import 'dart:ui';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+part of image_provider;
 
 class RadialMenu extends StatefulWidget {
   final List<RadialMenuEntry> entries;
@@ -12,7 +7,7 @@ class RadialMenu extends StatefulWidget {
   final IconData icon;
 
   const RadialMenu({
-    @required this.entries,
+    required this.entries,
     this.size = 160,
     this.entrySize = 85,
     this.icon = Icons.menu,
@@ -59,7 +54,7 @@ class _RadialMenuState extends State<RadialMenu> {
                         mini: true,
                         child: Icon(entry.icon),
                         onPressed: () {
-                          entry.onTap();
+                          entry.onTap!();
                           setState(() {
                             open = !open;
                           });
@@ -100,12 +95,12 @@ class _CenterRotated extends StatelessWidget {
   final Size parentSize;
   final Size size;
   final double angle;
-  final Widget child;
+  final Widget? child;
 
   _CenterRotated({
     this.angle = 0,
-    @required this.size,
-    @required this.parentSize,
+    required this.size,
+    required this.parentSize,
     this.child,
   });
 
@@ -130,13 +125,13 @@ class _CenterRotated extends StatelessWidget {
 }
 
 class RadialMenuEntry {
-  final Function onTap;
+  final Function? onTap;
   final IconData icon;
   final double iconSize;
 
   RadialMenuEntry({
     this.onTap,
-    @required this.icon,
+    required this.icon,
     iconColor,
     this.iconSize = 24,
   });
