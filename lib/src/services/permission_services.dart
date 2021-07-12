@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionServices {
@@ -13,6 +16,15 @@ class PermissionServices {
   }
 
   Future<bool> getCameraRequest() async {
+    if (Platform.isIOS) {
+      var iosInfo = await DeviceInfoPlugin().iosInfo;
+      var version = iosInfo.systemVersion;
+      final versionDouble = double.tryParse(version);
+      if (versionDouble! >= 14.0) {
+        return true;
+      }
+    } 
+    
     bool status = await Permission.camera.isGranted;
 
     if (!status) {

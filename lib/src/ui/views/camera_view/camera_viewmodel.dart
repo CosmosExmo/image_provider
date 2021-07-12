@@ -6,6 +6,7 @@ import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/path_service.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
   AdvCameraController? _controller;
@@ -15,6 +16,9 @@ class CameraViewModel with ChangeNotifier {
   FlashType? _flashType;
 
   String? _lastImage;
+
+  bool _viewDidLoad = false;
+  bool get viewDidLoad => _viewDidLoad;
 
   final _permissionService = PermissionServices();
   final _pathService = PathService();
@@ -28,18 +32,19 @@ class CameraViewModel with ChangeNotifier {
   String? get lastImage => this._lastImage;
   bool get hasCameraPermission => this._hasCameraPermission;
 
-  Future<CameraViewModel> get init async {
+  Future<void> getData() async {
+    await Future.delayed(Duration(milliseconds: 200));
     this._flashType = FlashType.auto;
     this._imageExport = ImageExport.camera();
     this._imageSavePath = await this._pathService.getImagePath();
-    this._hasCameraPermission =
-        await this._permissionService.getCameraRequest();
-    return this;
+    await requestCameraPermission();
+    _viewDidLoad = true;
+    notifyListeners();
   }
 
   Future<void> requestCameraPermission() async {
-    this._hasCameraPermission =
-        await this._permissionService.getCameraRequest();
+    final permissionStatus = await this._permissionService.getCameraRequest();
+    this._hasCameraPermission = permissionStatus;
   }
 
   Future<void> setCameraController(AdvCameraController value) async {

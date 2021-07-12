@@ -10,23 +10,50 @@ class CameraView extends StatefulWidget {
 class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder<CameraViewModel>(
-        future: CameraViewModel().init,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          return ChangeNotifierProvider(
-            create: (_) => snapshot.data,
-            builder: (context, child) {
-              return _CameraViewContent();
-            },
-          );
-        },
-      ),
+    return ChangeNotifierProvider(
+      create: (_) => CameraViewModel(),
+      builder: (context, child) {
+        return Scaffold(
+          body: _PageLoadingWidget(),
+        );
+      },
     );
+
+    
+  }
+}
+
+class _PageLoadingWidget extends StatefulWidget {
+  const _PageLoadingWidget({Key? key}) : super(key: key);
+
+  @override
+  __PageLoadingWidgetState createState() => __PageLoadingWidgetState();
+}
+
+class __PageLoadingWidgetState extends State<_PageLoadingWidget> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CameraViewModel>().getData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final viewDidLoad =
+        context.select<CameraViewModel, bool>((value) => value.viewDidLoad);
+
+    return !viewDidLoad
+        ? Center(child: CircularProgressIndicator())
+        : _ViewWidgets();
+  }
+}
+
+class _ViewWidgets extends StatelessWidget {
+  const _ViewWidgets({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _CameraViewContent();
   }
 }
 
@@ -72,54 +99,29 @@ class _NoPermissionView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Kamerayı kullanabilmek için gerekli izinlerin verilmesi gerekmektedir!",
+                "Kamerayı kullanabilmek için gerekli izinlerin verilmesi gerekmektedir. Lütfen cihazınızın ayarlar menüsünden gerekli izinlerin verildiğine emin olun.",
+                textAlign: TextAlign.center,
               ),
-              _SpacingWidget(),
+              /* _SpacingWidget(),
               ElevatedButton(
                 onPressed:
                     context.read<CameraViewModel>().requestCameraPermission,
                 child: Text(
                   "İzinleri Al",
                 ),
-              )
+              ) */
             ],
           ),
         )),
         Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: Colors.black38,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Colors.transparent,
-                    ),
-                    _SpacingWidget(),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.camera,
-                        size: 70,
-                        color: Colors.transparent,
-                      ),
-                    ),
-                    _SpacingWidget(),
-                    InkWell(
-                      onTap: () =>
-                          context.read<CameraViewModel>().returnData(context),
-                      child: Icon(Icons.arrow_back, size: 50),
-                    ),
-                  ],
-                ),
+          top: 50,
+          left: 40,
+          child: SafeArea(
+            child: Center(
+              child: InkWell(
+                onTap: () =>
+                    context.read<CameraViewModel>().returnData(context),
+                child: BackButtonIcon(),
               ),
             ),
           ),
@@ -321,6 +323,7 @@ class _CameraWidget extends StatelessWidget {
       selector: (_, model) => model.flashType,
       builder: (context, value, child) {
         return AdvCamera(
+          ignorePermission: false,
           initialCameraType: CameraType.rear,
           cameraPreviewRatio: CameraPreviewRatio.r16_9,
           cameraSessionPreset: CameraSessionPreset.photo,
@@ -341,9 +344,9 @@ class _SpacingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (axis == Axis.horizontal) {
-      return SizedBox(width: 30);
+      return const SizedBox(width: 30);
     }
 
-    return SizedBox(height: 30);
+    return const SizedBox(height: 30);
   }
 }

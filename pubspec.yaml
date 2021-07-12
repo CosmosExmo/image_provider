@@ -20,6 +20,7 @@ dependencies:
   flutter_image_compress: ^1.0.0
   permission_handler: ^8.1.2
   path_provider: ^2.0.2
+  device_info: ^2.0.2
 
   dialog_service:
     path: /Users/emircanurfa/dev/flutter_packages/dialog_service
