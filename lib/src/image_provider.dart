@@ -19,7 +19,7 @@ class ImageProvider {
     return result;
   }
 
-  Future<ImageExport?> getImages() async {
+  Future<ImageExport?> getImages({int maxImage = 50}) async {
     final _repositoryType = await _pickRepository;
 
     switch (_repositoryType) {
@@ -29,7 +29,7 @@ class ImageProvider {
         break;
       case RepositoryType.Gallery:
         print('Galeri');
-        await _getGalleryImages();
+        await _getGalleryImages(maxImage);
         break;
       case RepositoryType.Local:
         print('Local');
@@ -52,10 +52,10 @@ class ImageProvider {
     this._imageExport = images;
   }
 
-  Future<void> _getGalleryImages() async {
+  Future<void> _getGalleryImages(int maxImage) async {
     try {
       final images = await MultiImagePicker.pickImages(
-        maxImages: 50,
+        maxImages: maxImage,
       );
 
       final imageExport = ImageExport.gallery();

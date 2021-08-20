@@ -18,8 +18,6 @@ class _CameraViewState extends State<CameraView> {
         );
       },
     );
-
-    
   }
 }
 
@@ -30,11 +28,33 @@ class _PageLoadingWidget extends StatefulWidget {
   __PageLoadingWidgetState createState() => __PageLoadingWidgetState();
 }
 
-class __PageLoadingWidgetState extends State<_PageLoadingWidget> {
+class __PageLoadingWidgetState extends State<_PageLoadingWidget>
+    with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     context.read<CameraViewModel>().getData();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print("RESUME CAMERA NOT MOUNTED");
+      if (mounted) {
+        print("RESUME CAMERA MOUNTED");
+        context.read<CameraViewModel>().resumeCamera();
+      }
+    } else {
+      print("DİSPOSE CAMERA");
+      context.read<CameraViewModel>().disposeCamera();
+    }
   }
 
   @override

@@ -6,7 +6,6 @@ import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/path_service.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
   AdvCameraController? _controller;
@@ -78,5 +77,9 @@ class CameraViewModel with ChangeNotifier {
 
   Future<void> disposeCamera() async {
     await this._controller?.turnOffCamera();
+  }
+
+  Future<void> resumeCamera() async {
+    await this._controller?.turnOnCamera();
   }
 }

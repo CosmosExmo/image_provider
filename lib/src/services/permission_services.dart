@@ -19,12 +19,12 @@ class PermissionServices {
     if (Platform.isIOS) {
       var iosInfo = await DeviceInfoPlugin().iosInfo;
       var version = iosInfo.systemVersion;
-      final versionDouble = double.tryParse(version);
-      if (versionDouble! >= 14.0) {
+      final versionDouble = double.tryParse(version.substring(0, 4));
+      if (versionDouble != null && versionDouble >= 14.0) {
         return true;
       }
-    } 
-    
+    }
+
     bool status = await Permission.camera.isGranted;
 
     if (!status) {
