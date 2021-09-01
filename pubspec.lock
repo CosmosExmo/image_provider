@@ -67,9 +67,11 @@ packages:
   dialog_service:
     dependency: "direct main"
     description:
-      path: "/Users/emircanurfa/dev/flutter_packages/dialog_service"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: c8d79c66a854059e0f0b875d0a757f4a41402ff7
+      url: "https://github.com/CosmosExmo/dialog_service.git"
+    source: git
     version: "0.0.1"
   fake_async:
     dependency: transitive

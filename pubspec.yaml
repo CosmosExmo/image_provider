@@ -23,7 +23,8 @@ dependencies:
   device_info: ^2.0.2
 
   dialog_service:
-    path: /Users/emircanurfa/dev/flutter_packages/dialog_service
+    git:
+      url: https://github.com/CosmosExmo/dialog_service.git
 
 dev_dependencies:
   flutter_test:
