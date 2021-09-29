@@ -75,7 +75,7 @@ class _ViewWidgets extends StatelessWidget {
         const _CameraViewContent(),
         IgnorePointer(
           child: Selector<CameraViewModel, bool>(
-            selector: (_, model) => model.showPicturaTakenWidget,
+            selector: (_, model) => model.showPictureTakenWidget,
             builder: (context, value, _) {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 100),

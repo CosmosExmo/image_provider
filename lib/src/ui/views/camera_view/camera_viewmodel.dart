@@ -82,7 +82,7 @@ class CameraViewModel with ChangeNotifier {
       await HapticFeedback.mediumImpact();
       _focusTimer =
           Timer(const Duration(milliseconds: 300), _onPictureTakenTimerEnd);
-      _showPicturaTakenWidget = true;
+      _showPictureTakenWidget = true;
       notifyListeners();
       final _imageFile = await _controller?.takePicture();
       _lastImage = _imageFile?.path;
@@ -158,8 +158,8 @@ class CameraViewModel with ChangeNotifier {
   bool _showFocusWidget = false;
   bool get showFocusWidget => _showFocusWidget;
 
-  bool _showPicturaTakenWidget = false;
-  bool get showPicturaTakenWidget => _showPicturaTakenWidget;
+  bool _showPictureTakenWidget = false;
+  bool get showPictureTakenWidget => _showPictureTakenWidget;
 
   void _onFocusTimerEnd() {
     _showFocusWidget = false;
@@ -167,7 +167,7 @@ class CameraViewModel with ChangeNotifier {
   }
 
   void _onPictureTakenTimerEnd() {
-    _showPicturaTakenWidget = false;
+    _showPictureTakenWidget = false;
     notifyListeners();
   }
 
