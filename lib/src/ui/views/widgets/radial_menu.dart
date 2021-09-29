@@ -7,11 +7,12 @@ class RadialMenu extends StatefulWidget {
   final IconData icon;
 
   const RadialMenu({
+    Key? key,
     required this.entries,
     this.size = 160,
     this.entrySize = 85,
     this.icon = Icons.menu,
-  });
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _RadialMenuState();
@@ -25,7 +26,7 @@ class _RadialMenuState extends State<RadialMenu> {
     Size subCategorySize = Size(widget.entrySize, widget.entrySize);
     Size mainSize = Size(widget.size, widget.size);
 
-    return Container(
+    return SizedBox(
       width: mainSize.width,
       height: mainSize.height,
       child: Stack(
@@ -97,7 +98,7 @@ class _CenterRotated extends StatelessWidget {
   final double angle;
   final Widget? child;
 
-  _CenterRotated({
+  const _CenterRotated({
     this.angle = 0,
     required this.size,
     required this.parentSize,
@@ -112,7 +113,7 @@ class _CenterRotated extends StatelessWidget {
         parentSize.width / 2.1 - size.width / 1.9,
         parentSize.height / 2.1 - size.height / 1.9,
       ),
-      child: Container(
+      child: SizedBox(
         width: size.width / 1.8,
         height: size.height / 1.8,
         child: Transform.rotate(

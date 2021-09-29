@@ -6,7 +6,7 @@ class ImageExport {
   final RepositoryType? repositoryType;
   List<Uint8List?>? images;
 
-  bool get hasImage => this.images != null && this.images!.isNotEmpty;
+  bool get hasImage => images != null && images!.isNotEmpty;
 
   ImageExport({
     this.repositoryType,
@@ -14,23 +14,23 @@ class ImageExport {
   });
 
   ImageExport.camera({
-    this.repositoryType = RepositoryType.Camera,
+    this.repositoryType = RepositoryType.camera,
     this.images,
   }) {
-    this.images = [];
+    images = [];
   }
 
   ImageExport.gallery({
-    this.repositoryType = RepositoryType.Gallery,
+    this.repositoryType = RepositoryType.gallery,
     this.images,
   }) {
-    this.images = [];
+    images = [];
   }
 
   ImageExport.local({
-    this.repositoryType = RepositoryType.Local,
+    this.repositoryType = RepositoryType.local,
     this.images,
   }) {
-    this.images = [];
+    images = [];
   }
 }

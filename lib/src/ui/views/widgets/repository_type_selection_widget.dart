@@ -24,16 +24,16 @@ class RepositoryTypeSelectionWidget extends StatelessWidget {
       actions: [
         CupertinoDialogAction(
           child: cameraOption,
-          onPressed: () => Navigator.pop(context, RepositoryType.Camera),
+          onPressed: () => Navigator.pop(context, RepositoryType.camera),
         ),
         CupertinoDialogAction(
           child: galleryOption,
-          onPressed: () => Navigator.pop(context, RepositoryType.Gallery),
+          onPressed: () => Navigator.pop(context, RepositoryType.gallery),
         ),
         if (showLocalOption)
           CupertinoDialogAction(
             child: localOption!,
-            onPressed: () => Navigator.pop(context, RepositoryType.Local),
+            onPressed: () => Navigator.pop(context, RepositoryType.local),
           ),
         CupertinoDialogAction(
           isDefaultAction: true,

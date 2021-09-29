@@ -1,1 +1,1 @@
-enum RepositoryType { Gallery, Camera, Local }
+enum RepositoryType { gallery, camera, local }

@@ -3,7 +3,7 @@ library image_provider;
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:adv_camera/adv_camera.dart';
+import 'package:camera/camera.dart';
 import 'package:dialog_service/dialog_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

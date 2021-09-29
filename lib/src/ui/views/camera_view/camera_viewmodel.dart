@@ -1,18 +1,22 @@
-import 'package:adv_camera/adv_camera.dart';
+import 'dart:async';
+
+import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_provider/src/app/enums.dart';
 import 'package:image_provider/src/models/image_export.dart';
-import 'package:image_provider/src/services/path_service.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
 
 class CameraViewModel with ChangeNotifier {
-  AdvCameraController? _controller;
+  static late List<CameraDescription> _availableCameras = [];
+
+  late CameraController? _controller;
 
   ImageExport? _imageExport;
 
-  FlashType? _flashType;
+  FlashMode? _flashType;
 
   String? _lastImage;
 
@@ -20,66 +24,173 @@ class CameraViewModel with ChangeNotifier {
   bool get viewDidLoad => _viewDidLoad;
 
   final _permissionService = PermissionServices();
-  final _pathService = PathService();
-
-  String? _imageSavePath;
 
   bool _hasCameraPermission = false;
 
-  AdvCameraController? get controller => this._controller;
-  FlashType? get flashType => this._flashType;
-  String? get lastImage => this._lastImage;
-  bool get hasCameraPermission => this._hasCameraPermission;
+  CameraController? get controller => _controller;
+  FlashMode? get flashType => _flashType;
+  String? get lastImage => _lastImage;
+  bool get hasCameraPermission => _hasCameraPermission;
+
+  double _baseScale = 1.0;
+  int _pointers = 0;
+
+  late double? _maxZoomLevel;
+  late double? _minZoomLevel;
 
   Future<void> getData() async {
-    await Future.delayed(Duration(milliseconds: 200));
-    this._flashType = FlashType.auto;
-    this._imageExport = ImageExport.camera();
-    this._imageSavePath = await this._pathService.getImagePath();
+    await Future.delayed(const Duration(milliseconds: 200));
+    _flashType = FlashMode.auto;
+    _imageExport = ImageExport.camera();
     await requestCameraPermission();
+    await _initCamera();
     _viewDidLoad = true;
     notifyListeners();
   }
 
-  Future<void> requestCameraPermission() async {
-    final permissionStatus = await this._permissionService.getCameraRequest();
-    this._hasCameraPermission = permissionStatus;
+  Future<void> _initCamera() async {
+    if (_availableCameras.isEmpty) {
+      await _fetchAvailableCameras();
+    }
+
+    _controller = CameraController(
+      _availableCameras[0],
+      ResolutionPreset.max,
+      enableAudio: false,
+      imageFormatGroup: ImageFormatGroup.jpeg,
+    );
+
+    await _controller?.initialize();
+
+    await Future.wait([
+      _controller!.getMaxZoomLevel().then((value) => _maxZoomLevel = value),
+      _controller!.getMinZoomLevel().then((value) => _minZoomLevel = value),
+    ]);
   }
 
-  Future<void> setCameraController(AdvCameraController value) async {
-    this._controller = value;
-    if (_imageSavePath != null)
-      await this._controller!.setSavePath(this._imageSavePath!);
+  Future<void> _fetchAvailableCameras() async {
+    _availableCameras = await availableCameras();
+  }
+
+  Future<void> requestCameraPermission() async {
+    final permissionStatus = await _permissionService.getCameraRequest();
+    _hasCameraPermission = permissionStatus;
   }
 
   Future<void> captureImage() async {
-    await HapticFeedback.mediumImpact();
-    await _controller?.captureImage();
+    try {
+      await HapticFeedback.mediumImpact();
+      _focusTimer =
+          Timer(const Duration(milliseconds: 300), _onPictureTakenTimerEnd);
+      _showPicturaTakenWidget = true;
+      notifyListeners();
+      final _imageFile = await _controller?.takePicture();
+      _lastImage = _imageFile?.path;
+      final _params = ImageCompressParams(
+          repositoryType: RepositoryType.camera, imageData: _imageFile?.path);
+      final value = await getImageCompressed(_params);
+      _imageExport?.images?.add(value);
+      notifyListeners();
+    } catch (_) {}
   }
 
-  Future<void> onCapture(String path) async {
-    this._lastImage = path;
-    final byteData = await getImageCompressed(RepositoryType.Camera, path);
-    this._imageExport!.images!.add(byteData);
+  void setFlashMode(FlashMode value) async {
+    _flashType = value;
+    await _controller?.setFlashMode(value);
     notifyListeners();
   }
 
-  void setFlashMode(FlashType value) async {
-    this._flashType = value;
-    await this._controller?.setFlashType(value);
+  void onPointerDown() {
+    _pointers++;
+  }
+
+  void onPointerUp() {
+    _pointers--;
+  }
+
+  void handleScaleStart(ScaleStartDetails details) {
+    _baseScale = 1.0;
+  }
+
+  Future<void> handleScaleUpdate(ScaleUpdateDetails details) async {
+    if (controller == null || _pointers != 2) {
+      return;
+    }
+
+    if (_minZoomLevel == null || _maxZoomLevel == null) {
+      return;
+    }
+
+    final _currentScale = (_baseScale * details.scale)
+        .clamp(_minZoomLevel!, _maxZoomLevel!)
+        .toDouble();
+
+    await controller!.setZoomLevel(_currentScale);
+  }
+
+  void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {
+    if (controller == null) {
+      return;
+    }
+
+    final CameraController cameraController = controller!;
+
+    final offset = Offset(
+      details.localPosition.dx / constraints.maxWidth,
+      details.localPosition.dy / constraints.maxHeight,
+    );
+
+    _tabOffset = Offset(details.localPosition.dx, details.localPosition.dy);
+    _focusTimer = Timer(const Duration(milliseconds: 300), _onFocusTimerEnd);
+    _showFocusWidget = true;
+    notifyListeners();
+
+    cameraController.setExposurePoint(offset);
+    cameraController.setFocusPoint(offset);
+  }
+
+  Timer? _focusTimer;
+  Timer? _pictureTakenTimer;
+
+  Offset _tabOffset = Offset.zero;
+  Offset get tabOffset => _tabOffset;
+
+  bool _showFocusWidget = false;
+  bool get showFocusWidget => _showFocusWidget;
+
+  bool _showPicturaTakenWidget = false;
+  bool get showPicturaTakenWidget => _showPicturaTakenWidget;
+
+  void _onFocusTimerEnd() {
+    _showFocusWidget = false;
+    notifyListeners();
+  }
+
+  void _onPictureTakenTimerEnd() {
+    _showPicturaTakenWidget = false;
     notifyListeners();
   }
 
   void returnData(BuildContext context) async {
-    await this.disposeCamera();
-    Navigator.pop(context, this._imageExport);
+    await disposeCamera();
+    Navigator.pop(context, _imageExport);
   }
 
   Future<void> disposeCamera() async {
-    await this._controller?.turnOffCamera();
+    if (_focusTimer != null && _focusTimer!.isActive) {
+      _focusTimer!.cancel();
+    }
+    if (_pictureTakenTimer != null && _pictureTakenTimer!.isActive) {
+      _pictureTakenTimer!.cancel();
+    }
+    await _controller?.dispose();
+  }
+
+  Future<void> pauseCamera() async {
+    await _controller?.pausePreview();
   }
 
   Future<void> resumeCamera() async {
-    await this._controller?.turnOnCamera();
+    await _controller?.resumePreview();
   }
 }

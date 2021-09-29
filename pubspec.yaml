@@ -1,25 +1,24 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.0.1
-author:
+version: 0.2.0
 homepage:
 
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
-  flutter: ">=2.0.6"
+  sdk: '>=2.14.0 <3.0.0'
+  flutter: ">=2.2.3"
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.0.0
-  adv_camera: ^2.0.1+1
+  provider: ^6.0.1
+  camera: ^0.9.4+1
   native_device_orientation: ^1.0.0
   multi_image_picker2: ^5.0.2
   flutter_image_compress: ^1.1.0
-  permission_handler: ^8.1.4+2
-  path_provider: ^2.0.2
+  permission_handler: ^8.1.6
+  path_provider: ^2.0.5
   device_info: ^2.0.2
 
   dialog_service:
@@ -29,6 +28,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_lints: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

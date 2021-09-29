@@ -23,33 +23,29 @@ class ImageProvider {
     final _repositoryType = await _pickRepository;
 
     switch (_repositoryType) {
-      case RepositoryType.Camera:
-        print('Kamera');
+      case RepositoryType.camera:
         await _getCameraImages();
         break;
-      case RepositoryType.Gallery:
-        print('Galeri');
+      case RepositoryType.gallery:
         await _getGalleryImages(maxImage);
         break;
-      case RepositoryType.Local:
-        print('Local');
+      case RepositoryType.local:
         break;
       default:
-        print('Default');
     }
 
-    return this._imageExport;
+    return _imageExport;
   }
 
   Future<void> _getCameraImages() async {
     final images = await Navigator.push<ImageExport>(
       _context,
       MaterialPageRoute(
-        builder: (_) => CameraView(),
+        builder: (_) => const CameraView(),
       ),
     );
 
-    this._imageExport = images;
+    _imageExport = images;
   }
 
   Future<void> _getGalleryImages(int maxImage) async {
@@ -60,14 +56,22 @@ class ImageProvider {
 
       final imageExport = ImageExport.gallery();
 
-      for (var item in images) {
+      await Future.wait<void>(List.from(
+        images.map<Future<void>>((item) async {
+          final _params = ImageCompressParams(
+              repositoryType: RepositoryType.gallery, imageData: item);
+          final value = await compute(getImageCompressed, _params);
+          imageExport.images?.add(value);
+        }),
+      ));
+
+      /* for (var item in images) {
         final byteData = await getImageCompressed(RepositoryType.Gallery, item);
         imageExport.images!.add(byteData);
-      }
+      } */
 
-      this._imageExport = imageExport;
-    } on NoImagesSelectedException catch (e) {
-      print(e);
+      _imageExport = imageExport;
+    } on NoImagesSelectedException catch (_) {
       return;
     }
   }

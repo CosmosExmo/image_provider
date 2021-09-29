@@ -1,7 +1,7 @@
 part of image_provider;
 
 class CameraView extends StatefulWidget {
-  CameraView({Key? key}) : super(key: key);
+  const CameraView({Key? key}) : super(key: key);
 
   @override
   _CameraViewState createState() => _CameraViewState();
@@ -13,7 +13,7 @@ class _CameraViewState extends State<CameraView> {
     return ChangeNotifierProvider(
       create: (_) => CameraViewModel(),
       builder: (context, child) {
-        return Scaffold(
+        return const Scaffold(
           body: _PageLoadingWidget(),
         );
       },
@@ -46,14 +46,11 @@ class __PageLoadingWidgetState extends State<_PageLoadingWidget>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      print("RESUME CAMERA NOT MOUNTED");
       if (mounted) {
-        print("RESUME CAMERA MOUNTED");
         context.read<CameraViewModel>().resumeCamera();
       }
     } else {
-      print("DİSPOSE CAMERA");
-      context.read<CameraViewModel>().disposeCamera();
+      context.read<CameraViewModel>().pauseCamera();
     }
   }
 
@@ -63,8 +60,8 @@ class __PageLoadingWidgetState extends State<_PageLoadingWidget>
         context.select<CameraViewModel, bool>((value) => value.viewDidLoad);
 
     return !viewDidLoad
-        ? Center(child: CircularProgressIndicator())
-        : _ViewWidgets();
+        ? const Center(child: CircularProgressIndicator())
+        : const _ViewWidgets();
   }
 }
 
@@ -73,7 +70,24 @@ class _ViewWidgets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _CameraViewContent();
+    return Stack(
+      children: [
+        const _CameraViewContent(),
+        IgnorePointer(
+          child: Selector<CameraViewModel, bool>(
+            selector: (_, model) => model.showPicturaTakenWidget,
+            builder: (context, value, _) {
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                height: double.infinity,
+                width: double.infinity,
+                color: value ? Colors.black : Colors.transparent,
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -91,16 +105,16 @@ class _CameraViewContent extends StatelessWidget {
               NativeDeviceOrientationReader.orientation(context);
           switch (orientation) {
             case NativeDeviceOrientation.landscapeLeft:
-              return _LandscapeContent();
+              return const _LandscapeContent();
             case NativeDeviceOrientation.landscapeRight:
-              return _LandscapeContent();
+              return const _LandscapeContent();
             default:
-              return _PortraitContent();
+              return const _PortraitContent();
           }
         },
       );
     } else {
-      return _NoPermissionView();
+      return const _NoPermissionView();
     }
   }
 }
@@ -117,19 +131,11 @@ class _NoPermissionView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+            children: const [
               Text(
                 "Kamerayı kullanabilmek için gerekli izinlerin verilmesi gerekmektedir. Lütfen cihazınızın ayarlar menüsünden gerekli izinlerin verildiğine emin olun.",
                 textAlign: TextAlign.center,
               ),
-              /* _SpacingWidget(),
-              ElevatedButton(
-                onPressed:
-                    context.read<CameraViewModel>().requestCameraPermission,
-                child: Text(
-                  "İzinleri Al",
-                ),
-              ) */
             ],
           ),
         )),
@@ -141,7 +147,7 @@ class _NoPermissionView extends StatelessWidget {
               child: InkWell(
                 onTap: () =>
                     context.read<CameraViewModel>().returnData(context),
-                child: BackButtonIcon(),
+                child: const BackButtonIcon(),
               ),
             ),
           ),
@@ -158,7 +164,7 @@ class _PortraitContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: _CameraWidget()),
+        const Positioned.fill(child: _CameraWidget(turns: 0)),
         Positioned(
           bottom: 0,
           left: 0,
@@ -184,16 +190,16 @@ class _PortraitContent extends StatelessWidget {
                         );
                       },
                     ),
-                    _SpacingWidget(),
+                    const _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
-                      child: Icon(Icons.camera, size: 70),
+                      child: const Icon(Icons.camera, size: 70),
                     ),
-                    _SpacingWidget(),
+                    const _SpacingWidget(),
                     InkWell(
                       onTap: () =>
                           context.read<CameraViewModel>().returnData(context),
-                      child: Icon(Icons.check, size: 50),
+                      child: const Icon(Icons.check, size: 50),
                     ),
                   ],
                 ),
@@ -201,12 +207,12 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
+        const Positioned(
           top: 0,
           left: 0,
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: _FlashToggleButton(),
             ),
           ),
@@ -223,7 +229,7 @@ class _LandscapeContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: _CameraWidget()),
+        const Positioned.fill(child: _CameraWidget(turns: 1)),
         Positioned(
           top: 0,
           bottom: 0,
@@ -249,16 +255,16 @@ class _LandscapeContent extends StatelessWidget {
                         );
                       },
                     ),
-                    _SpacingWidget(),
+                    const _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
-                      child: Icon(Icons.camera, size: 70),
+                      child: const Icon(Icons.camera, size: 70),
                     ),
-                    _SpacingWidget(),
+                    const _SpacingWidget(),
                     InkWell(
                       onTap: () =>
                           context.read<CameraViewModel>().returnData(context),
-                      child: Icon(Icons.check, size: 50),
+                      child: const Icon(Icons.check, size: 50),
                     ),
                   ],
                 ),
@@ -266,13 +272,13 @@ class _LandscapeContent extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
+        const Positioned(
           top: 0,
           bottom: 0,
           left: 0,
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(20.0),
               child: _FlashToggleButton(),
             ),
           ),
@@ -287,7 +293,7 @@ class _FlashToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<CameraViewModel, FlashType?>(
+    return Selector<CameraViewModel, FlashMode?>(
       selector: (_, model) => model.flashType,
       builder: (context, value, widget) {
         return RadialMenu(
@@ -296,21 +302,21 @@ class _FlashToggleButton extends StatelessWidget {
             RadialMenuEntry(
               icon: Icons.flash_auto,
               onTap: () {
-                final type = FlashType.auto;
+                const type = FlashMode.auto;
                 context.read<CameraViewModel>().setFlashMode(type);
               },
             ),
             RadialMenuEntry(
               icon: Icons.flash_on,
               onTap: () {
-                final type = FlashType.on;
+                const type = FlashMode.always;
                 context.read<CameraViewModel>().setFlashMode(type);
               },
             ),
             RadialMenuEntry(
               icon: Icons.flash_off,
               onTap: () {
-                final type = FlashType.off;
+                const type = FlashMode.off;
                 context.read<CameraViewModel>().setFlashMode(type);
               },
             ),
@@ -320,13 +326,13 @@ class _FlashToggleButton extends StatelessWidget {
     );
   }
 
-  IconData _getFlashIcon(FlashType? type) {
+  IconData _getFlashIcon(FlashMode? type) {
     switch (type) {
-      case FlashType.auto:
+      case FlashMode.auto:
         return Icons.flash_auto;
-      case FlashType.on:
+      case FlashMode.always:
         return Icons.flash_on;
-      case FlashType.off:
+      case FlashMode.off:
         return Icons.flash_off;
       default:
         return Icons.flash_auto;
@@ -335,22 +341,84 @@ class _FlashToggleButton extends StatelessWidget {
 }
 
 class _CameraWidget extends StatelessWidget {
-  const _CameraWidget({Key? key}) : super(key: key);
+  final int turns;
+  const _CameraWidget({Key? key, required this.turns}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Selector<CameraViewModel, FlashType?>(
-      selector: (_, model) => model.flashType,
+    return Selector<CameraViewModel, CameraController?>(
+      selector: (_, model) => model.controller,
       builder: (context, value, child) {
-        return AdvCamera(
-          ignorePermission: false,
-          initialCameraType: CameraType.rear,
-          cameraPreviewRatio: CameraPreviewRatio.r16_9,
-          cameraSessionPreset: CameraSessionPreset.photo,
-          focusRectColor: Theme.of(context).primaryColor,
-          flashType: value!,
-          onCameraCreated: context.read<CameraViewModel>().setCameraController,
-          onImageCaptured: context.read<CameraViewModel>().onCapture,
+        if (value == null) {
+          return const SizedBox();
+        }
+
+        double? height = turns == 0
+            ? value.value.previewSize?.width
+            : value.value.previewSize?.flipped.width;
+        double? width = turns == 0
+            ? value.value.previewSize?.height
+            : value.value.previewSize?.flipped.height;
+
+        return FittedBox(
+          fit: BoxFit.cover,
+          child: SizedBox(
+            width: width,
+            height: height,
+            child: Listener(
+              onPointerDown: (_) =>
+                  context.read<CameraViewModel>().onPointerDown(),
+              onPointerUp: (_) => context.read<CameraViewModel>().onPointerUp(),
+              child: CameraPreview(
+                value,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Stack(
+                      children: [
+                        Selector<CameraViewModel, bool>(
+                          selector: (_, model) => model.showFocusWidget,
+                          builder: (context, value, _) {
+                            if (!value) {
+                              return const SizedBox();
+                            }
+
+                            final _offset =
+                                context.read<CameraViewModel>().tabOffset;
+                            final _rect = Rect.fromCenter(
+                                center: _offset, width: 200, height: 200);
+
+                            return Positioned.fromRect(
+                              rect: _rect,
+                              child: Container(
+                                height: 300,
+                                width: 300,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 5,
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onScaleStart:
+                              context.read<CameraViewModel>().handleScaleStart,
+                          onScaleUpdate:
+                              context.read<CameraViewModel>().handleScaleUpdate,
+                          onTapDown: (details) => context
+                              .read<CameraViewModel>()
+                              .onViewFinderTap(details, constraints),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
         );
       },
     );

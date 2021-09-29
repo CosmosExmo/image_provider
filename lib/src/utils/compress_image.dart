@@ -1,22 +1,32 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_provider/src/app/enums.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 
-Future<Uint8List?> getImageCompressed(
-  RepositoryType repositoryType,
-  dynamic imageData,
-) async {
+import 'package:image_provider/src/app/enums.dart';
+
+@immutable
+class ImageCompressParams {
+  final RepositoryType repositoryType;
+  final dynamic imageData;
+
+  const ImageCompressParams({
+    required this.repositoryType,
+    required this.imageData,
+  });
+}
+
+Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
   late Uint8List returnData;
 
-  if (repositoryType == RepositoryType.Camera) {
-    returnData = File(imageData).readAsBytesSync();
+  if (params.repositoryType == RepositoryType.camera) {
+    returnData = File(params.imageData).readAsBytesSync();
   }
 
-  if (repositoryType == RepositoryType.Gallery) {
-    returnData = await getUInt8List(imageData);
+  if (params.repositoryType == RepositoryType.gallery) {
+    returnData = await getUInt8List(params.imageData);
   }
 
   final compressedImage = await compressList(returnData);
@@ -40,8 +50,7 @@ Future<Uint8List?> compressList(Uint8List list) async {
       quality: 80,
     );
     return result;
-  } catch (e) {
-    print(e);
+  } catch (_) {
     return null;
   }
 }
