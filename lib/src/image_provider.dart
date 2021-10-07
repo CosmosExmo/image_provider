@@ -60,15 +60,10 @@ class ImageProvider {
         images.map<Future<void>>((item) async {
           final _params = ImageCompressParams(
               repositoryType: RepositoryType.gallery, imageData: item);
-          final value = await compute(getImageCompressed, _params);
+          final value = await getImageCompressed(_params);
           imageExport.images?.add(value);
         }),
       ));
-
-      /* for (var item in images) {
-        final byteData = await getImageCompressed(RepositoryType.Gallery, item);
-        imageExport.images!.add(byteData);
-      } */
 
       _imageExport = imageExport;
     } on NoImagesSelectedException catch (_) {
