@@ -77,21 +77,25 @@ class CameraViewModel with ChangeNotifier {
     _hasCameraPermission = permissionStatus;
   }
 
+  void setShowPictureTakenWidget(bool value) {
+    _showPictureTakenWidget = value;
+    notifyListeners();
+  }
+
   Future<void> captureImage() async {
     try {
       await HapticFeedback.mediumImpact();
-      _focusTimer =
-          Timer(const Duration(milliseconds: 300), _onPictureTakenTimerEnd);
-      _showPictureTakenWidget = true;
-      notifyListeners();
+      setShowPictureTakenWidget(true);
       final _imageFile = await _controller?.takePicture();
       _lastImage = _imageFile?.path;
       final _params = ImageCompressParams(
           repositoryType: RepositoryType.camera, imageData: _imageFile?.path);
       final value = await getImageCompressed(_params);
       _imageExport?.images?.add(value);
-      notifyListeners();
-    } catch (_) {}
+      setShowPictureTakenWidget(false);
+    } catch (_) {
+      setShowPictureTakenWidget(false);
+    }
   }
 
   void setFlashMode(FlashMode value) async {
@@ -150,7 +154,6 @@ class CameraViewModel with ChangeNotifier {
   }
 
   Timer? _focusTimer;
-  Timer? _pictureTakenTimer;
 
   Offset _tabOffset = Offset.zero;
   Offset get tabOffset => _tabOffset;
@@ -166,11 +169,6 @@ class CameraViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void _onPictureTakenTimerEnd() {
-    _showPictureTakenWidget = false;
-    notifyListeners();
-  }
-
   void returnData(BuildContext context) async {
     await disposeCamera();
     Navigator.pop(context, _imageExport);
@@ -179,9 +177,6 @@ class CameraViewModel with ChangeNotifier {
   Future<void> disposeCamera() async {
     if (_focusTimer != null && _focusTimer!.isActive) {
       _focusTimer!.cancel();
-    }
-    if (_pictureTakenTimer != null && _pictureTakenTimer!.isActive) {
-      _pictureTakenTimer!.cancel();
     }
     await _controller?.dispose();
   }
