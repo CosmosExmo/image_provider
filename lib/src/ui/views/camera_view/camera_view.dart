@@ -96,26 +96,29 @@ class _CameraViewContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final permissionStatus = context
-        .select<CameraViewModel, bool>((model) => model.hasCameraPermission);
-    if (permissionStatus) {
-      return NativeDeviceOrientationReader(
-        builder: (context) {
-          final orientation =
-              NativeDeviceOrientationReader.orientation(context);
-          switch (orientation) {
-            case NativeDeviceOrientation.landscapeLeft:
-              return const _LandscapeContent();
-            case NativeDeviceOrientation.landscapeRight:
-              return const _LandscapeContent();
-            default:
-              return const _PortraitContent();
-          }
-        },
-      );
-    } else {
-      return const _NoPermissionView();
-    }
+    return Selector<CameraViewModel, bool>(
+      selector: (_, model) => model.hasCameraPermission,
+      builder: (context, value, _) {
+        if (value) {
+          return NativeDeviceOrientationReader(
+            builder: (context) {
+              final orientation =
+                  NativeDeviceOrientationReader.orientation(context);
+              switch (orientation) {
+                case NativeDeviceOrientation.landscapeLeft:
+                  return const _LandscapeContent();
+                case NativeDeviceOrientation.landscapeRight:
+                  return const _LandscapeContent();
+                default:
+                  return const _PortraitContent();
+              }
+            },
+          );
+        } else {
+          return const _NoPermissionView();
+        }
+      },
+    );
   }
 }
 

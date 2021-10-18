@@ -22,6 +22,13 @@ class PermissionServices {
       final versionDouble = double.tryParse(version.substring(0, 4));
       if (versionDouble != null && versionDouble >= 14.0) {
         return true;
+      } else {
+        final per = await Permission.camera.request();
+        if (per == PermissionStatus.permanentlyDenied) {
+          return true;
+        } else {
+          return await Permission.camera.isGranted;
+        }
       }
     }
 
