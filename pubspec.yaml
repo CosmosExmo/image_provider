@@ -1,6 +1,6 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.2.3
+version: 0.3.0
 homepage:
 
 publish_to: none
@@ -20,6 +20,9 @@ dependencies:
   permission_handler: ^8.2.5
   path_provider: ^2.0.5
   device_info: ^2.0.2
+
+  #Web
+  file_picker: ^4.1.4
 
   dialog_service:
     git:

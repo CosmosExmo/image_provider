@@ -29,6 +29,11 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
     returnData = await getUInt8List(params.imageData);
   }
 
+  if (params.repositoryType == RepositoryType.files) {
+    returnData = params.imageData.bytes;
+    return returnData;
+  }
+
   final compressedImage = await compressList(returnData);
 
   return compressedImage;

@@ -20,6 +20,11 @@ class ImageProvider {
   }
 
   Future<ImageExport?> getImages({int maxImage = 50}) async {
+    if (kIsWeb) {
+      await _getImagesFromFile();
+      return _imageExport;
+    }
+
     final _repositoryType = await _pickRepository;
 
     switch (_repositoryType) {
@@ -60,6 +65,35 @@ class ImageProvider {
         images.map<Future<void>>((item) async {
           final _params = ImageCompressParams(
               repositoryType: RepositoryType.gallery, imageData: item);
+          final value = await getImageCompressed(_params);
+          imageExport.images?.add(value);
+        }),
+      ));
+
+      _imageExport = imageExport;
+    } on NoImagesSelectedException catch (_) {
+      return;
+    }
+  }
+
+  Future<void> _getImagesFromFile() async {
+    try {
+      final images = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'png'],
+        allowMultiple: true,
+      );
+
+      if (images == null) {
+        return;
+      }
+
+      final imageExport = ImageExport.files();
+
+      await Future.wait<void>(List.from(
+        images.files.map<Future<void>>((item) async {
+          final _params = ImageCompressParams(
+              repositoryType: RepositoryType.files, imageData: item);
           final value = await getImageCompressed(_params);
           imageExport.images?.add(value);
         }),

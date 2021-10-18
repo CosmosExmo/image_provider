@@ -33,4 +33,11 @@ class ImageExport {
   }) {
     images = [];
   }
+
+  ImageExport.files({
+    this.repositoryType = RepositoryType.files,
+    this.images,
+  }) {
+    images = [];
+  }
 }
