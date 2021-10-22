@@ -8,6 +8,7 @@ import 'package:image_provider/src/app/enums.dart';
 import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
   static late List<CameraDescription> _availableCameras = [];
@@ -25,12 +26,12 @@ class CameraViewModel with ChangeNotifier {
 
   final _permissionService = PermissionServices();
 
-  bool _hasCameraPermission = false;
+  late PermissionStatus _cameraPermissionStatus;
 
   CameraController? get controller => _controller;
   FlashMode? get flashType => _flashType;
   String? get lastImage => _lastImage;
-  bool get hasCameraPermission => _hasCameraPermission;
+  PermissionStatus get cameraPermissionStatus => _cameraPermissionStatus;
 
   double _baseScale = 1.0;
   int _pointers = 0;
@@ -74,7 +75,7 @@ class CameraViewModel with ChangeNotifier {
 
   Future<void> requestCameraPermission() async {
     final permissionStatus = await _permissionService.getCameraRequest();
-    _hasCameraPermission = permissionStatus;
+    _cameraPermissionStatus = permissionStatus;
   }
 
   void setShowPictureTakenWidget(bool value) {

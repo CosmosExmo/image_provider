@@ -96,10 +96,10 @@ class _CameraViewContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<CameraViewModel, bool>(
-      selector: (_, model) => model.hasCameraPermission,
+    return Selector<CameraViewModel, PermissionStatus>(
+      selector: (_, model) => model.cameraPermissionStatus,
       builder: (context, value, _) {
-        if (value) {
+        if (value == PermissionStatus.granted) {
           return NativeDeviceOrientationReader(
             builder: (context) {
               final orientation =

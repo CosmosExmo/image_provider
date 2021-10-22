@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:file_picker/file_picker.dart';
 

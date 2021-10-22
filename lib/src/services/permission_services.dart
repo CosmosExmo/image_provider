@@ -15,29 +15,17 @@ class PermissionServices {
     return status;
   }
 
-  Future<bool> getCameraRequest() async {
+  Future<PermissionStatus> getCameraRequest() async {
     if (Platform.isIOS) {
       var iosInfo = await DeviceInfoPlugin().iosInfo;
       var version = iosInfo.systemVersion;
       final versionDouble = double.tryParse(version.substring(0, 4));
-      if (versionDouble != null && versionDouble >= 14.0) {
-        return true;
-      } else {
-        final per = await Permission.camera.request();
-        if (per == PermissionStatus.permanentlyDenied) {
-          return true;
-        } else {
-          return await Permission.camera.isGranted;
-        }
+      if (versionDouble != null && versionDouble >= 12.0) {
+        return PermissionStatus.granted;
       }
     }
 
-    bool status = await Permission.camera.isGranted;
-
-    if (!status) {
-      await Permission.camera.request();
-      status = await Permission.camera.isGranted;
-    }
+    final status = await Permission.camera.request();
 
     return status;
   }
