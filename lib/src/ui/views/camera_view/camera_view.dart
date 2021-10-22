@@ -220,6 +220,19 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
+         Positioned(
+          top: 0,
+          right: 0,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                context.read<CameraViewModel>().getCurrentVersion,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -283,6 +296,22 @@ class _LandscapeContent extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: _FlashToggleButton(),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Text(
+                  context.read<CameraViewModel>().getCurrentVersion,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
             ),
           ),
         ),

@@ -8,6 +8,7 @@ import 'package:image_provider/src/app/enums.dart';
 import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
+import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
@@ -32,6 +33,8 @@ class CameraViewModel with ChangeNotifier {
   FlashMode? get flashType => _flashType;
   String? get lastImage => _lastImage;
   PermissionStatus get cameraPermissionStatus => _cameraPermissionStatus;
+
+  String get getCurrentVersion => PackageInfoHolder().packageVersion;
 
   double _baseScale = 1.0;
   int _pointers = 0;
