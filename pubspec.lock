@@ -89,11 +89,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "60c22017fe78b46dbb2b768848e2c79bbc74014c"
-      resolved-ref: "60c22017fe78b46dbb2b768848e2c79bbc74014c"
+      ref: "331f145a53a2a2a0dfbeeb87ae847180788538e3"
+      resolved-ref: "331f145a53a2a2a0dfbeeb87ae847180788538e3"
       url: "https://github.com/CosmosExmo/dialog_service.git"
     source: git
-    version: "0.1.1"
+    version: "0.1.2"
   fake_async:
     dependency: transitive
     description:

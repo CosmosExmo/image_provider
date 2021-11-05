@@ -1,6 +1,6 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.3.2
+version: 0.3.3
 homepage:
 
 publish_to: none
@@ -27,7 +27,7 @@ dependencies:
   dialog_service:
     git:
       url: https://github.com/CosmosExmo/dialog_service.git
-      ref: 60c22017fe78b46dbb2b768848e2c79bbc74014c
+      ref: 331f145a53a2a2a0dfbeeb87ae847180788538e3
 
 dev_dependencies:
   flutter_test:
