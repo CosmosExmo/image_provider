@@ -1,28 +1,28 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.3.3
+version: 0.3.4
 homepage:
 
 publish_to: none
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
   flutter: ">=2.2.3"
 
 dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.1
-  camera: ^0.9.4+2
+  camera: ^0.9.4+5
   native_device_orientation: ^1.0.0
   multi_image_picker2: ^5.0.2
   flutter_image_compress: ^1.1.0
-  permission_handler: ^8.2.5
-  path_provider: ^2.0.5
-  device_info: ^2.0.2
+  permission_handler: ^8.3.0
+  path_provider: ^2.0.8
+  device_info: ^2.0.3
 
   #Web
-  file_picker: ^4.1.4
+  file_picker: ^4.2.7
 
   dialog_service:
     git:
