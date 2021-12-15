@@ -80,7 +80,7 @@ class ImageProvider {
     try {
       final images = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['jpg', 'png'],
+        allowedExtensions: ['jpg', 'png', 'pdf'],
         allowMultiple: true,
       );
 
