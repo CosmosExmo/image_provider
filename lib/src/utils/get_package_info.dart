@@ -1,5 +1,5 @@
 class PackageInfoHolder {
   //TODO: Read package version from pubspec.yaml
-  final String _packageVersion = "v0.3.5";
+  final String _packageVersion = "v0.3.6";
   String get packageVersion => _packageVersion;
 }

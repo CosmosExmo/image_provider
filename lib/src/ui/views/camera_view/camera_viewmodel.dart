@@ -95,7 +95,8 @@ class CameraViewModel with ChangeNotifier {
       final _params = ImageCompressParams(
           repositoryType: RepositoryType.camera, imageData: _imageFile?.path);
       final value = await getImageCompressed(_params);
-      _imageExport?.images?.add(value);
+      final _content = ContentData.fromData("jpg", value);
+      _imageExport?.images?.add(_content);
       setShowPictureTakenWidget(false);
     } catch (_) {
       setShowPictureTakenWidget(false);

@@ -66,7 +66,8 @@ class ImageProvider {
           final _params = ImageCompressParams(
               repositoryType: RepositoryType.gallery, imageData: item);
           final value = await getImageCompressed(_params);
-          imageExport.images?.add(value);
+          final _content = ContentData.fromData("jpg", value);
+          imageExport.images?.add(_content);
         }),
       ));
 
@@ -82,6 +83,7 @@ class ImageProvider {
         type: FileType.custom,
         allowedExtensions: ['jpg', 'png', 'pdf'],
         allowMultiple: true,
+        withData: true,
       );
 
       if (images == null) {
@@ -92,10 +94,12 @@ class ImageProvider {
 
       await Future.wait<void>(List.from(
         images.files.map<Future<void>>((item) async {
-          final _params = ImageCompressParams(
-              repositoryType: RepositoryType.files, imageData: item);
-          final value = await getImageCompressed(_params);
-          imageExport.images?.add(value);
+          final _content = ContentData.fromData(
+            item.extension,
+            item.bytes,
+            fileName: item.name,
+          );
+          imageExport.images?.add(_content);
         }),
       ));
 
