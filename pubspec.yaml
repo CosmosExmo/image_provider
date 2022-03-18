@@ -1,6 +1,6 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.3.6
+version: 0.3.7
 homepage:
 
 publish_to: none
@@ -17,7 +17,7 @@ dependencies:
   native_device_orientation: ^1.0.0
   multi_image_picker2: ^5.0.2
   flutter_image_compress: ^1.1.0
-  permission_handler: ^8.3.0
+  permission_handler: ^9.2.0
   path_provider: ^2.0.8
   device_info: ^2.0.3
 
@@ -27,7 +27,7 @@ dependencies:
   dialog_service:
     git:
       url: https://github.com/CosmosExmo/dialog_service.git
-      ref: 331f145a53a2a2a0dfbeeb87ae847180788538e3
+      ref: 5ef1ee53758b9e16fc80f7aabae6d60581704527
 
 dev_dependencies:
   flutter_test:
