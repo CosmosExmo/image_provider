@@ -89,8 +89,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5ef1ee53758b9e16fc80f7aabae6d60581704527"
-      resolved-ref: "5ef1ee53758b9e16fc80f7aabae6d60581704527"
+      ref: e71cc459414494d925fb409ff2291de131ded035
+      resolved-ref: e71cc459414494d925fb409ff2291de131ded035
       url: "https://github.com/CosmosExmo/dialog_service.git"
     source: git
     version: "0.1.2"
