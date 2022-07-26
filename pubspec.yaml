@@ -1,38 +1,36 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.3.7
+version: 0.3.9
 homepage:
 
 publish_to: none
 
 environment:
-  sdk: '>=2.14.0 <3.0.0'
+  sdk: '>=2.15.0 <3.0.0'
   flutter: ">=2.2.3"
 
 dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.1
-  camera: ^0.9.4+5
+  camera: ^0.10.0
   native_device_orientation: ^1.0.0
   multi_image_picker2: ^5.0.2
   flutter_image_compress: ^1.1.0
-  permission_handler: ^9.2.0
+  permission_handler: ^10.0.0
   path_provider: ^2.0.8
   device_info: ^2.0.3
 
   #Web
-  file_picker: ^4.2.7
+  file_picker: ^5.0.0
 
   dialog_service:
-    git:
-      url: https://github.com/CosmosExmo/dialog_service.git
-      ref: e71cc459414494d925fb409ff2291de131ded035
+    path: /Users/emircanurfa/dev/flutter_packages/dialog_service
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.4
+  flutter_lints: ^2.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

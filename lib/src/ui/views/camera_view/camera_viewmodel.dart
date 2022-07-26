@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_provider/src/app/enums.dart';
@@ -12,7 +11,7 @@ import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
-  static late List<CameraDescription> _availableCameras = [];
+  static List<CameraDescription> _availableCameras = [];
 
   late CameraController? _controller;
 
@@ -90,13 +89,13 @@ class CameraViewModel with ChangeNotifier {
     try {
       await HapticFeedback.mediumImpact();
       setShowPictureTakenWidget(true);
-      final _imageFile = await _controller?.takePicture();
-      _lastImage = _imageFile?.path;
-      final _params = ImageCompressParams(
-          repositoryType: RepositoryType.camera, imageData: _imageFile?.path);
-      final value = await getImageCompressed(_params);
-      final _content = ContentData.fromData("jpg", value);
-      _imageExport?.images?.add(_content);
+      final imageFile = await _controller?.takePicture();
+      _lastImage = imageFile?.path;
+      final params = ImageCompressParams(
+          repositoryType: RepositoryType.camera, imageData: imageFile?.path);
+      final value = await getImageCompressed(params);
+      final content = ContentData.fromData("jpg", value);
+      _imageExport?.images?.add(content);
       setShowPictureTakenWidget(false);
     } catch (_) {
       setShowPictureTakenWidget(false);
@@ -130,11 +129,11 @@ class CameraViewModel with ChangeNotifier {
       return;
     }
 
-    final _currentScale = (_baseScale * details.scale)
+    final currentScale = (_baseScale * details.scale)
         .clamp(_minZoomLevel!, _maxZoomLevel!)
         .toDouble();
 
-    await controller!.setZoomLevel(_currentScale);
+    await controller!.setZoomLevel(currentScale);
   }
 
   void onViewFinderTap(TapDownDetails details, BoxConstraints constraints) {

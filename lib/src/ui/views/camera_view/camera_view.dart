@@ -1,13 +1,8 @@
 part of image_provider;
 
-class CameraView extends StatefulWidget {
+class CameraView extends StatelessWidget {
   const CameraView({Key? key}) : super(key: key);
 
-  @override
-  _CameraViewState createState() => _CameraViewState();
-}
-
-class _CameraViewState extends State<CameraView> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -33,13 +28,13 @@ class __PageLoadingWidgetState extends State<_PageLoadingWidget>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     context.read<CameraViewModel>().getData();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -220,7 +215,7 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
-         Positioned(
+        Positioned(
           top: 0,
           right: 0,
           child: SafeArea(
@@ -414,13 +409,13 @@ class _CameraWidget extends StatelessWidget {
                               return const SizedBox();
                             }
 
-                            final _offset =
+                            final offset =
                                 context.read<CameraViewModel>().tabOffset;
-                            final _rect = Rect.fromCenter(
-                                center: _offset, width: 200, height: 200);
+                            final rect = Rect.fromCenter(
+                                center: offset, width: 200, height: 200);
 
                             return Positioned.fromRect(
-                              rect: _rect,
+                              rect: rect,
                               child: Container(
                                 height: 300,
                                 width: 300,
