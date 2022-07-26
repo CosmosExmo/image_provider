@@ -25,7 +25,9 @@ dependencies:
   file_picker: ^5.0.0
 
   dialog_service:
-    path: /Users/emircanurfa/dev/flutter_packages/dialog_service
+    git:
+      url: https://github.com/CosmosExmo/dialog_service.git
+      ref: bc4de3ca630ddda691a7f67abd995c0013e92fc7
 
 dev_dependencies:
   flutter_test:
