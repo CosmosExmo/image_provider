@@ -9,9 +9,9 @@ class ImageProvider {
   ImageExport? _imageExport;
 
   Future<RepositoryType?> get _pickRepository async {
-    final _dialogService = DialogService();
+    final dialogService = DialogService();
 
-    final result = await _dialogService.showModalReturnData<RepositoryType>(
+    final result = await dialogService.showModalReturnData<RepositoryType>(
       _context,
       _widget,
     );
@@ -25,9 +25,9 @@ class ImageProvider {
       return _imageExport;
     }
 
-    final _repositoryType = await _pickRepository;
+    final repositoryType = await _pickRepository;
 
-    switch (_repositoryType) {
+    switch (repositoryType) {
       case RepositoryType.camera:
         await _getCameraImages();
         break;
@@ -63,11 +63,11 @@ class ImageProvider {
 
       await Future.wait<void>(List.from(
         images.map<Future<void>>((item) async {
-          final _params = ImageCompressParams(
+          final params = ImageCompressParams(
               repositoryType: RepositoryType.gallery, imageData: item);
-          final value = await getImageCompressed(_params);
-          final _content = ContentData.fromData("jpg", value);
-          imageExport.images?.add(_content);
+          final value = await getImageCompressed(params);
+          final content = ContentData.fromData("jpg", value);
+          imageExport.images?.add(content);
         }),
       ));
 
@@ -94,12 +94,12 @@ class ImageProvider {
 
       await Future.wait<void>(List.from(
         images.files.map<Future<void>>((item) async {
-          final _content = ContentData.fromData(
+          final content = ContentData.fromData(
             item.extension,
             item.bytes,
             fileName: item.name,
           );
-          imageExport.images?.add(_content);
+          imageExport.images?.add(content);
         }),
       ));
 
