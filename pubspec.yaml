@@ -27,7 +27,7 @@ dependencies:
   dialog_service:
     git:
       url: https://github.com/CosmosExmo/dialog_service.git
-      ref: bc4de3ca630ddda691a7f67abd995c0013e92fc7
+      ref: 4a63d2c5909e78d412fe9cb8237eb072019d2fa1
 
 dev_dependencies:
   flutter_test:

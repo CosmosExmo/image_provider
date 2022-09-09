@@ -33,13 +33,13 @@ class _RadialMenuState extends State<RadialMenu> {
         children: <Widget>[
           FloatingActionButton(
             heroTag: 'togglePartners',
-            child: Icon(widget.icon),
             elevation: 0,
             onPressed: () {
               setState(() {
                 open = !open;
               });
             },
+            child: Icon(widget.icon),
           ),
           if (open)
             ...widget.entries
