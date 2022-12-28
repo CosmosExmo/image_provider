@@ -175,6 +175,7 @@ class CameraViewModel with ChangeNotifier {
 
   void returnData(BuildContext context) async {
     await disposeCamera();
+    // ignore: use_build_context_synchronously
     Navigator.pop(context, _imageExport);
   }
 

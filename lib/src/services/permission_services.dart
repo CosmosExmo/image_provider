@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class PermissionServices {
@@ -19,7 +19,7 @@ class PermissionServices {
     if (Platform.isIOS) {
       var iosInfo = await DeviceInfoPlugin().iosInfo;
       var version = iosInfo.systemVersion;
-      final versionDouble = double.tryParse(version.substring(0, 4));
+      final versionDouble = double.tryParse(version!.substring(0, 4));
       if (versionDouble != null && versionDouble >= 12.0) {
         return PermissionStatus.granted;
       }

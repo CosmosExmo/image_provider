@@ -453,7 +453,8 @@ class _CameraWidget extends StatelessWidget {
 }
 
 class _SpacingWidget extends StatelessWidget {
-  final Axis axis;
+  final Axis? axis;
+  // ignore: unused_element
   const _SpacingWidget({Key? key, this.axis = Axis.vertical}) : super(key: key);
 
   @override

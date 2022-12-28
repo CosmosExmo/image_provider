@@ -21,7 +21,7 @@ packages:
       name: camera
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0+4"
+    version: "0.10.1"
   camera_android:
     dependency: transitive
     description:
@@ -78,20 +78,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3+1"
-  device_info:
+  device_info_plus:
     dependency: "direct main"
     description:
-      name: device_info
+      name: device_info_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
-  device_info_platform_interface:
+    version: "8.0.0"
+  device_info_plus_platform_interface:
     dependency: transitive
     description:
-      name: device_info_platform_interface
+      name: device_info_plus_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "7.0.0"
   dialog_service:
     dependency: "direct main"
     description:
@@ -128,7 +128,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.2.2"
+    version: "5.2.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -339,7 +339,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.4"
+    version: "6.0.5"
   quiver:
     dependency: transitive
     description:
