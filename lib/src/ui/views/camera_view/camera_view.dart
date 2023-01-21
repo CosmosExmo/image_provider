@@ -181,11 +181,15 @@ class _PortraitContent extends StatelessWidget {
                       shouldRebuild: (a, b) => a != b,
                       selector: (_, model) => model.lastImage,
                       builder: (context, value, child) {
-                        return CircleAvatar(
-                          radius: 25.0,
-                          backgroundImage:
-                              value != null ? AssetImage(value) : null,
-                        );
+                        if (value != null) {
+                          final file = File(value);
+                          return CircleAvatar(
+                            radius: 25.0,
+                            backgroundImage:
+                                MemoryImage(file.readAsBytesSync()),
+                          );
+                        }
+                        return const CircleAvatar(radius: 25.0);
                       },
                     ),
                     const _SpacingWidget(),
@@ -259,11 +263,15 @@ class _LandscapeContent extends StatelessWidget {
                       shouldRebuild: (a, b) => a != b,
                       selector: (_, model) => model.lastImage,
                       builder: (context, value, child) {
-                        return CircleAvatar(
-                          radius: 25.0,
-                          backgroundImage:
-                              value != null ? AssetImage(value) : null,
-                        );
+                        if (value != null) {
+                          final file = File(value);
+                          return CircleAvatar(
+                            radius: 25.0,
+                            backgroundImage:
+                                MemoryImage(file.readAsBytesSync()),
+                          );
+                        }
+                        return const CircleAvatar(radius: 25.0);
                       },
                     ),
                     const _SpacingWidget(),

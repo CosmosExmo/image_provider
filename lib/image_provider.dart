@@ -1,5 +1,6 @@
 library image_provider;
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
@@ -14,7 +15,7 @@ import 'package:image_provider/src/ui/views/camera_view/camera_viewmodel.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_asker/permission_asker.dart';
 import 'package:provider/provider.dart';
 
 part 'src/image_provider.dart';

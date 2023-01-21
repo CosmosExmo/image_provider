@@ -1,6 +1,6 @@
 name: image_provider
 description: A new Flutter package project.
-version: 0.3.9
+version: 0.4.0
 homepage:
 
 publish_to: none
@@ -17,7 +17,7 @@ dependencies:
   native_device_orientation: ^1.0.0
   multi_image_picker2: ^5.0.2
   flutter_image_compress: ^1.1.0
-  permission_handler: ^10.0.0
+  permission_asker: ^1.0.0+1
   path_provider: ^2.0.8
   device_info: ^2.0.3
 
