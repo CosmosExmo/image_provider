@@ -24,7 +24,6 @@ dependencies:
   focused_image_widget:
     git:
       url: "git@github.com:CosmosExmo/focused_image_widget.git"
-      ref: a212e41b8a243e93d525aae12d31e4024fbc75f0
 
 # deprecated
 
