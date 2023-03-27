@@ -22,12 +22,12 @@ dependencies:
   #Web
   file_picker: ^5.2.4
   focused_image_widget:
-    path: "../../Libraries/focused_image_widget/"
+    git:
+      url: "git@github.com:CosmosExmo/focused_image_widget.git"
 
 # deprecated
 
   multi_image_picker2: ^5.0.2
-
 
   dialog_service:
     git:
@@ -39,5 +39,10 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^2.0.1
 flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - image_provider_assets/imgs/
 
 

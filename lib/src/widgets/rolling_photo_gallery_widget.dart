@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:focused_image_widget/focused_image_widget.dart';
 import 'package:image_provider/image_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter/src/painting/image_provider.dart' as imgprov;
 import '../ui/views/camera_view/camera_viewmodel.dart';
 
 class RollingGalleryShowCase extends StatefulWidget {
@@ -97,150 +99,160 @@ class _RollingGalleryShowCaseBarState extends State<RollingGalleryShowCase>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.loose,
+      alignment: Alignment.centerRight,
+      children: [
+        toggle == 1
+            ? SizedBox.shrink()
+            : Material(
+                /// can add custom color or the color will be white
+                /// toggle button color based on toggle state
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(30.0),
+                child: IconButton(
+                  splashRadius: 19.0,
+                  iconSize: 60,
+                  color: Colors.transparent.withOpacity(0),
 
-    return Container(
-      height: widget.height,
+                  ///if toggle is 1, which means it's open. so show the back icon, which will close it.
+                  ///if the toggle is 0, which means it's closed, so tapping on it will expand the widget.
+                  ///prefixIcon is of type Icon
+                  icon: widget.prefixIcon != null
+                      ? toggle == 1
+                          ? Icon(
+                              Icons.arrow_back_ios,
+                              color: widget.textFieldIconColor,
+                            )
+                          : widget.prefixIcon!
+                      : Icon(
+                          toggle == 1
+                              ? Icons.arrow_back_ios
+                              : Icons.photo_album,
+                          // search icon color when closed
+                          color: Colors.white,
+                          size: 35.0,
+                        ),
+                  onPressed: () {
+                    setState(
+                      () {
+                        ///if the search bar is closed
+                        if (toggle == 0) {
+                          toggle = 1;
 
-      ///if the rtl is true, search bar will be from right to left
-      alignment:
-          widget.rtl ? Alignment.centerRight : const Alignment(-1.0, 0.0),
+                          ///forward == expand
+                          _con.forward();
+                        } else {
+                          ///if the search bar is expanded
+                          toggle = 0;
 
-      ///Using Animated container to expand and shrink the widget
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: widget.animationDurationInMilli),
-        height: 70,
-        width: (toggle == 0) ? 70 : widget.width,
-        curve: Curves.easeOut,
-        decoration: BoxDecoration(
-          /// can add custom  color or the color will be white
-          color: toggle == 1 ? widget.textFieldColor : widget.color,
-          borderRadius: BorderRadius.circular(30.0),
-
-          /// show boxShadow unless false was passed
-          boxShadow: !widget.boxShadow
-              ? null
-              : [
-                  const BoxShadow(
-                    color: Colors.black26,
-                    spreadRadius: -10.0,
-                    blurRadius: 10.0,
-                    offset: Offset(0.0, 10.0),
-                  ),
-                ],
-        ),
-        child: Stack(
-          children: [
-            AnimatedPositioned(
-              duration: Duration(milliseconds: widget.animationDurationInMilli),
-              left: (toggle == 0) ? 20.0 : 40.0,
-              curve: Curves.easeOut,
-              top: 11.0,
-              child: AnimatedOpacity(
-                opacity: (toggle == 0) ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Container(
-                  padding: const EdgeInsets.only(left: 10),
-                  alignment: Alignment.topCenter,
-                  width: widget.width / 1.3,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        const SizedBox(width: 30),
-                        ...widget.photoCheckerMap.entries.map((item) {
-                          if(item.value.contentData == null) return Container();
-                           final data = item.value.contentData;
-                           return Padding(
-                            padding: const EdgeInsets.only(right: 3.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Stack(
-                                  children: [
-                                   ImageHolder(image: DecorationImage(image: AssetImage(data!.path!)),child: CircleAvatar(
-                                        radius: 20.0,
-                                        backgroundImage: data.path != null
-                                            ? AssetImage(data.path!)
-                                            : null,
-                                      ),),
-                                    Positioned(
-                                      right: -2,
-                                      top: -2,
-                                      child: GestureDetector(
-                                          onTap: () => context
-                                              .read<CameraViewModel>()
-                                              .removeImageByIndex(
-                                                  item.key),
-                                          child: const Icon(Icons.cancel,
-                                              color: Colors.red, size: 18)),
-                                    ),
-                                  ],
-                                ),
-                                Text(item.value.title!),
-                              ],
-                            ),
-                          );
-
-                        }).toList(),
-                      ],
-                    ),
-                  ),
+                          ///if the autoFocus is true, the keyboard will close, automatically
+                          ///reverse == close
+                          _con.reverse();
+                        }
+                      },
+                    );
+                  },
                 ),
               ),
-            ),
-
-            ///Using material widget here to get the ripple effect on the prefix icon
-            Material(
-              /// can add custom color or the color will be white
-              /// toggle button color based on toggle state
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(30.0),
-              child: IconButton(
-                splashRadius: 19.0,
-                iconSize: 60,
-
-                ///if toggle is 1, which means it's open. so show the back icon, which will close it.
-                ///if the toggle is 0, which means it's closed, so tapping on it will expand the widget.
-                ///prefixIcon is of type Icon
-                icon: widget.prefixIcon != null
-                    ? toggle == 1
-                        ? Icon(
-                            Icons.arrow_back_ios,
-                            color: widget.textFieldIconColor,
-                          )
-                        : widget.prefixIcon!
-                    : Icon(
-                        toggle == 1 ? Icons.arrow_back_ios : Icons.photo_album,
-                        // search icon color when closed
-                        color: Colors.white,
-                        size: 35.0,
-                      ),
-                onPressed: () {
-                  setState(
-                    () {
-                      ///if the search bar is closed
-                      if (toggle == 0) {
-                        toggle = 1;
-                        ///forward == expand
-                        _con.forward();
-                      } else {
-                        ///if the search bar is expanded
-                        toggle = 0;
-                        ///if the autoFocus is true, the keyboard will close, automatically
-                        ///reverse == close
-                        _con.reverse();
-                      }
-                    },
-                  );
-                },
+        AnimatedContainer(
+          duration: Duration(milliseconds: widget.animationDurationInMilli),
+          height: (toggle == 0) ? 0 : MediaQuery.of(context).size.height * 0.4,
+          width: (toggle == 0) ? 0 : MediaQuery.of(context).size.width * 0.6,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.grey.shade800.withOpacity(0.8),
+          ),
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              GridView.count(
+                crossAxisCount: 2,
+                padding: const EdgeInsets.all(20),
+                children: [
+                  if (toggle == 1)
+                    ...widget.photoCheckerMap.entries.map((item) {
+                      if (item.value.contentData == null) return Container();
+                      final data = item.value.contentData;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 6.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Stack(
+                              fit: StackFit.loose,
+                              children: [
+                                Builder(builder: (context) {
+                                  late final imgprov.ImageProvider<Object> image;
+                                  if (data?.path != null) {
+                                    final file = File(data!.path!);
+                                    image = MemoryImage(file.readAsBytesSync());
+                                  }else {
+                                    image = const AssetImage('image_provider_assets/imgs/placeholder.jpg',package: 'image_provider');
+                                  }
+                                  return ImageHolder(
+                                      image: DecorationImage(
+                                          image: image),
+                                      child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .aspectRatio *
+                                              175,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .aspectRatio *
+                                              175,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                  image: image,
+                                                  fit: BoxFit.fill))));
+                                }),
+                                Positioned(
+                                  right: -2,
+                                  top: -2,
+                                  child: GestureDetector(
+                                      onTap: () => context
+                                          .read<CameraViewModel>()
+                                          .removeImageByIndex(item.key),
+                                      child: const Icon(Icons.cancel,
+                                          color: Colors.red, size: 18)),
+                                ),
+                              ],
+                            ),
+                            Text(item.value.title!),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                ],
               ),
-            ),
-          ],
+              Positioned(
+                top: -6,
+                left: -6,
+                child: IconButton(
+                    onPressed: () {
+                      setState(
+                        () {
+                          if (toggle == 0) {
+                            toggle = 1;
+                            _con.forward();
+                          } else {
+                            toggle = 0;
+                            _con.reverse();
+                          }
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.cancel)),
+              )
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

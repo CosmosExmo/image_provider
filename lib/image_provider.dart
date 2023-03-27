@@ -1,5 +1,6 @@
 library image_provider;
 
+import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';

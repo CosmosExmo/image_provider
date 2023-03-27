@@ -184,11 +184,15 @@ class _PortraitContent extends StatelessWidget {
                       shouldRebuild: (a, b) => a != b,
                       selector: (_, model) => model.lastImage,
                       builder: (context, value, child) {
-                        return CircleAvatar(
-                          radius: 25.0,
-                          backgroundImage:
-                              value != null ? AssetImage(value) : null,
-                        );
+                        if (value != null) {
+                          final file = File(value);
+                          return CircleAvatar(
+                            radius: 25.0,
+                            backgroundImage:
+                                MemoryImage(file.readAsBytesSync()),
+                          );
+                        }
+                        return const CircleAvatar(radius: 25.0);
                       },
                     ),
                     const _SpacingWidget(),
@@ -209,8 +213,9 @@ class _PortraitContent extends StatelessWidget {
           ),
         ),
         Positioned(
-          bottom: MediaQuery.of(context).size.height * 0.0950,
-          left: 0,
+          bottom: 0,
+          right: 0,
+          top: 0,
           child: SafeArea(
             child: Padding(
                 padding: const EdgeInsets.only(
