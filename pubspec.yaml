@@ -15,13 +15,14 @@ dependencies:
   provider: ^6.0.5
   camera: ^0.10.1
   native_device_orientation: ^1.1.4
-
   flutter_image_compress: ^1.1.3
   permission_handler: ^10.2.0
   path_provider: ^2.0.11
   device_info_plus: ^8.0.0
   #Web
   file_picker: ^5.2.4
+  focused_image_widget:
+    path: "../../Libraries/focused_image_widget/"
 
 # deprecated
 

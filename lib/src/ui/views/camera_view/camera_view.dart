@@ -1,12 +1,15 @@
 part of image_provider;
 
 class CameraView extends StatelessWidget {
-  const CameraView({Key? key}) : super(key: key);
-
+  const CameraView(
+    this._options, {
+    Key? key,
+  }) : super(key: key);
+  final CameraViewOptions? _options;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CameraViewModel(),
+      create: (_) => CameraViewModel(_options),
       builder: (context, child) {
         return const Scaffold(
           body: _PageLoadingWidget(),
@@ -171,7 +174,7 @@ class _PortraitContent extends StatelessWidget {
             color: Colors.black38,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.only(left: 20,right: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -191,7 +194,7 @@ class _PortraitContent extends StatelessWidget {
                     const _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
-                      child: const Icon(Icons.camera, size: 70),
+                      child: const Icon(Icons.camera, size: 60),
                     ),
                     const _SpacingWidget(),
                     InkWell(
@@ -205,6 +208,19 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          bottom: MediaQuery.of(context).size.height * 0.0950,
+          left: 0,
+          child: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 25, right: 5, left: 10),
+                child: RollingGalleryShowCase(
+                    width: MediaQuery.of(context).size.width * 0.925,
+                    height: MediaQuery.of(context).size.height * 0.0875,
+                    photoCheckerMap: context.watch<CameraViewModel>().photoCheckerMap)),
+          ),
+        ),
         const Positioned(
           top: 0,
           left: 0,
@@ -215,6 +231,34 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
+        if (context.watch<CameraViewModel>().hasTitle())
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        (context
+                            .watch<CameraViewModel>()
+                            .currentItem!.value.title!),
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         Positioned(
           top: 0,
           right: 0,

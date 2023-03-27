@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_provider/src/app/enums.dart';
+import 'package:image_provider/image_provider.dart';
 import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
@@ -11,15 +11,39 @@ import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
+  CameraViewModel(this._options){
+    _options ??= CameraViewOptions(
+        cameraItems: List.generate(50, (index) => CameraItemMetadata()).toList()
+      );
+  }
+
+  CameraViewOptions? _options;
   static List<CameraDescription> _availableCameras = [];
 
   late CameraController? _controller;
 
   ImageExport? _imageExport;
 
+  List<CameraItemMetadata> get cameraItems => _options!.cameraItems;
+
+  List<ContentData?> get photosTaken => _imageExport?.images ?? [];
+
+  Map<int, CameraItemMetadata> get photoCheckerMap => _options!.cameraItemsMap;
+
+  int get pictureCount => cameraItems.where((element) => element.contentData != null).length;
+
   FlashMode? _flashType;
 
+  int get maxphoto => cameraItems.isNotEmpty ? cameraItems.length : 50;
+
   String? _lastImage;
+
+  MapEntry<int, CameraItemMetadata>? get currentItem {
+    if(photoCheckerMap.values.every((v) => v.contentData != null)){
+      return null;
+    }
+    return photoCheckerMap.entries.firstWhere((element) => element.value.contentData == null);
+  }
 
   bool _viewDidLoad = false;
   bool get viewDidLoad => _viewDidLoad;
@@ -37,9 +61,22 @@ class CameraViewModel with ChangeNotifier {
 
   double _baseScale = 1.0;
   int _pointers = 0;
+  int currentIndex = 0;
 
   late double? _maxZoomLevel;
   late double? _minZoomLevel;
+
+  bool _showTakenPhotoGallery = false;
+  bool get showTakenPhotoGallery => _showTakenPhotoGallery;
+
+  Future<void> viewPhotosToggle() async {
+    _showTakenPhotoGallery = !_showTakenPhotoGallery;
+  }
+
+  Future<void> removeImageByIndex(int index) async {
+    photoCheckerMap[index] = photoCheckerMap[index]!.setEmpty();
+    notifyListeners();
+  }
 
   Future<void> getData() async {
     await Future.delayed(const Duration(milliseconds: 200));
@@ -49,6 +86,13 @@ class CameraViewModel with ChangeNotifier {
     await _initCamera();
     _viewDidLoad = true;
     notifyListeners();
+  }
+
+  bool hasTitle() {
+    if (currentItem == null || currentItem?.value.title == null) {
+      return false;
+    }
+    return true;
   }
 
   Future<void> _initCamera() async {
@@ -87,6 +131,9 @@ class CameraViewModel with ChangeNotifier {
 
   Future<void> captureImage() async {
     try {
+      if (currentItem == null) {
+        return;
+      }
       await HapticFeedback.mediumImpact();
       setShowPictureTakenWidget(true);
       final imageFile = await _controller?.takePicture();
@@ -94,8 +141,9 @@ class CameraViewModel with ChangeNotifier {
       final params = ImageCompressParams(
           repositoryType: RepositoryType.camera, imageData: imageFile?.path);
       final value = await getImageCompressed(params);
-      final content = ContentData.fromData("jpg", value);
+      final content = ContentData.fromData("jpg", value, path: imageFile!.path);
       _imageExport?.images?.add(content);
+      photoCheckerMap[currentItem!.key] = currentItem!.value.copyWith(contentData: content);
       setShowPictureTakenWidget(false);
     } catch (_) {
       setShowPictureTakenWidget(false);
@@ -175,6 +223,7 @@ class CameraViewModel with ChangeNotifier {
 
   void returnData(BuildContext context) async {
     await disposeCamera();
+    _imageExport?.images = photoCheckerMap.values.map((e) => e.contentData).toList();
     // ignore: use_build_context_synchronously
     Navigator.pop(context, _imageExport);
   }
