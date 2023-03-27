@@ -6,25 +6,26 @@ class ImageProvider {
   final RepositoryType? repositoryType;
   final CameraViewOptions? options;
 
-  ImageProvider(this._context, {this.widget,this.options, this.repositoryType}):assert(widget != null || repositoryType != null,'No repository type selected or widget provided');
+  ImageProvider(this._context, {this.widget, this.options, this.repositoryType})
+      : assert(widget != null || repositoryType != null,
+            'No repository type selected or widget provided');
 
   ImageExport? _imageExport;
 
   Future<RepositoryType?> get _pickRepository async {
-    if(widget != null){
+    if (widget != null) {
       final dialogService = DialogService();
 
-    final result = await dialogService.showModalReturnData<RepositoryType>(
-      _context,
-      widget!,
-    );
-    return result;
-    }else if(repositoryType != null){
-      return repositoryType;
-    }else {
-      throw Exception("No repository type selected or widget provided");
+      final result = await dialogService.showModalReturnData<RepositoryType>(
+        _context,
+        widget!,
+      );
+      return result;
     }
-    
+    if (repositoryType != null) {
+      return repositoryType;
+    }
+    throw Exception("No repository type selected or widget provided");
   }
 
   Future<ImageExport?> getImages({int maxImage = 50}) async {
