@@ -24,17 +24,9 @@ class CameraViewModel with ChangeNotifier {
 
   ImageExport? _imageExport;
 
-  List<CameraItemMetadata> get cameraItems => _options!.cameraItems;
-
-  List<ContentData?> get photosTaken => _imageExport?.images ?? [];
-
   Map<int, CameraItemMetadata> get photoCheckerMap => _options!.cameraItemsMap;
 
-  int get pictureCount => cameraItems.where((element) => element.contentData != null).length;
-
   FlashMode? _flashType;
-
-  int get maxphoto => cameraItems.isNotEmpty ? cameraItems.length : 50;
 
   String? _lastImage;
 
@@ -66,13 +58,6 @@ class CameraViewModel with ChangeNotifier {
   late double? _maxZoomLevel;
   late double? _minZoomLevel;
 
-  bool _showTakenPhotoGallery = false;
-  bool get showTakenPhotoGallery => _showTakenPhotoGallery;
-
-  Future<void> viewPhotosToggle() async {
-    _showTakenPhotoGallery = !_showTakenPhotoGallery;
-  }
-
   Future<void> removeImageByIndex(int index) async {
     photoCheckerMap[index] = photoCheckerMap[index]!.setEmpty();
     notifyListeners();
@@ -89,7 +74,7 @@ class CameraViewModel with ChangeNotifier {
   }
 
   bool hasTitle() {
-    if (currentItem == null || currentItem?.value.title == null) {
+    if (currentItem?.value.title == null) {
       return false;
     }
     return true;
