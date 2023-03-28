@@ -24,7 +24,7 @@ packages:
       sha256: b7316e7861cf7a7196ef670f391a0e8d1f36eebd4e199d3077e0a23e11db2a44
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.1"
+    version: "0.10.2+1"
   camera_android:
     dependency: transitive
     description:
@@ -32,7 +32,7 @@ packages:
       sha256: "4e8ca7b3b424671bf2333bdf5990f1bd2764f47ea9165a95a3948c51931c57f2"
       url: "https://pub.dev"
     source: hosted
-    version: "0.10.0+2"
+    version: "0.10.2+3"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -40,7 +40,7 @@ packages:
       sha256: e4c955160ba77a2ac1296f500dbc322bbc359f3886dd851d56adc62efdac3b62
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.8+5"
+    version: "0.9.10+2"
   camera_platform_interface:
     dependency: transitive
     description:
@@ -48,7 +48,7 @@ packages:
       sha256: "33ef011afebe1e55e07330435c74174a7f66ddb1049158557993518b91e1494a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.4"
   camera_web:
     dependency: transitive
     description:
@@ -56,7 +56,7 @@ packages:
       sha256: "38bb526e3988544344c405b1ace64d2f684ed0d0a315827fd67fa83374c98387"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1+1"
   characters:
     dependency: transitive
     description:
@@ -88,8 +88,8 @@ packages:
       sha256: "7632a2bcddc8cef4afde3c6f80e69b29a7060e176f01119c229fe4eb3a2a3d4f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3+1"
   device_info_plus:
+    version: "0.3.3+2"
     dependency: "direct main"
     description:
       name: device_info_plus
@@ -145,7 +145,7 @@ packages:
       sha256: ecf52f978e72763ede54a93271318bbbca65a2be2d9ff658ec8ca4ea3a23d7ef
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.4"
+    version: "5.2.5"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -209,7 +209,7 @@ packages:
       sha256: "5cfd6509652ff5e7fe149b6df4859e687fca9048437857cb2e65c8d780f396e3"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   matcher:
     dependency: transitive
     description:
@@ -281,7 +281,7 @@ packages:
       sha256: "4d5542667150f5b779ba411dd5dc0b674a85d1355e45bda2877e0e82f4ad08d8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.20"
+    version: "2.0.22"
   path_provider_ios:
     dependency: transitive
     description:
@@ -305,7 +305,7 @@ packages:
       sha256: "2a97e7fbb7ae9dcd0dfc1220a78e9ec3e71da691912e617e8715ff2a13086ae8"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
   path_provider_platform_interface:
     dependency: transitive
     description:
@@ -313,7 +313,7 @@ packages:
       sha256: "27dc7a224fcd07444cb5e0e60423ccacea3e13cf00fc5282ac2c918132da931d"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   path_provider_windows:
     dependency: transitive
     description:
@@ -322,8 +322,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  permission_handler:
-    dependency: "direct main"
+  pedantic:
+    dependency: transitive
     description:
       name: permission_handler
       sha256: "33c6a1253d1f95fd06fa74b65b7ba907ae9811f9d5c1d3150e51417d04b8d6a8"
@@ -346,6 +346,24 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.0.7"
+      name: pedantic
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.11.1"
+  permission_asker:
+    dependency: "direct main"
+    description:
+      name: permission_asker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+1"
+  permission_handler:
+    dependency: transitive
+    description:
+      name: permission_handler
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.1.3"
   permission_handler_platform_interface:
     dependency: transitive
     description:
@@ -377,7 +395,7 @@ packages:
       sha256: "075f927ebbab4262ace8d0b283929ac5410c0ac4e7fc123c76429564facfb757"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   process:
     dependency: transitive
     description:
@@ -401,7 +419,7 @@ packages:
       sha256: "93982981971e812c94d4a6fa3a57b89f9ec12b38b6380cd3c1370c3b01e4580e"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -438,7 +456,7 @@ packages:
       sha256: ed464977cb26a1f41537e177e190c67223dbd9f4f683489b6ab2e5d211ec564e
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   string_scanner:
     dependency: transitive
     description:
@@ -478,7 +496,7 @@ packages:
       sha256: d13ac5deea7327f027b3b97ee19ee210f68256ecf3f1a304bcfb992ee947637c
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.3"
   xdg_directories:
     dependency: transitive
     description:
@@ -486,7 +504,7 @@ packages:
       sha256: "11541eedefbcaec9de35aa82650b695297ce668662bbd6e3911a7fabdbde589f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0+2"
+    version: "0.2.0+3"
 sdks:
   dart: ">=2.18.0 <3.0.0"
   flutter: ">=3.3.8"

@@ -1,31 +1,28 @@
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_asker/permission_asker.dart';
 
 class PermissionServices {
   Future<bool> getStorageRequest() async {
-    bool status = await Permission.storage.isGranted;
+    PermissionStatus status = PermissionStatus.denied;
 
-    if (!status) {
-      await Permission.storage.request();
-      status = await Permission.storage.isGranted;
-    }
+    PermissionAsker(onPermissionData: (value) {
+      status = value.status;
+    });
 
-    return status;
+    status = await Permission.storage.request();
+
+    return status.isGranted;
   }
 
   Future<PermissionStatus> getCameraRequest() async {
-    if (Platform.isIOS) {
-      var iosInfo = await DeviceInfoPlugin().iosInfo;
-      var version = iosInfo.systemVersion;
-      final versionDouble = double.tryParse(version!.substring(0, 4));
-      if (versionDouble != null && versionDouble >= 12.0) {
-        return PermissionStatus.granted;
-      }
-    }
+    PermissionStatus status = PermissionStatus.denied;
 
-    final status = await Permission.camera.request();
+    PermissionAsker(
+        requestTimes: 0,
+        onPermissionData: (value) {
+          status = value.status;
+        });
+
+    status = await Permission.camera.request();
 
     return status;
   }

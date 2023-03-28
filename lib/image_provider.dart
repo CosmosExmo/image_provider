@@ -15,7 +15,7 @@ import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:image_provider/src/widgets/rolling_photo_gallery_widget.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_asker/permission_asker.dart';
 import 'package:provider/provider.dart';
 
 part 'src/app/enums.dart';

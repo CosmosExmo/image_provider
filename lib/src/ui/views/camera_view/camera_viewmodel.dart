@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, depend_on_referenced_packages
+
 import 'dart:async';
 
 import 'package:camera/camera.dart';
@@ -20,7 +22,7 @@ class CameraViewModel with ChangeNotifier {
   CameraViewOptions? _options;
   static List<CameraDescription> _availableCameras = [];
 
-  late CameraController? _controller;
+  CameraController? _controller;
 
   ImageExport? _imageExport;
 
@@ -42,12 +44,13 @@ class CameraViewModel with ChangeNotifier {
 
   final _permissionService = PermissionServices();
 
-  late PermissionStatus _cameraPermissionStatus;
+  PermissionStatus? _cameraPermissionStatus;
 
   CameraController? get controller => _controller;
   FlashMode? get flashType => _flashType;
   String? get lastImage => _lastImage;
-  PermissionStatus get cameraPermissionStatus => _cameraPermissionStatus;
+  PermissionStatus get cameraPermissionStatus =>
+      _cameraPermissionStatus ?? PermissionStatus.denied;
 
   String get getCurrentVersion => PackageInfoHolder().packageVersion;
 
@@ -91,6 +94,10 @@ class CameraViewModel with ChangeNotifier {
       enableAudio: false,
       imageFormatGroup: ImageFormatGroup.jpeg,
     );
+
+    if (!cameraPermissionStatus.isGranted) {
+      return;
+    }
 
     await _controller?.initialize();
 
