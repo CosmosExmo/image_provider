@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 part of image_provider;
 
 class CameraView extends StatelessWidget {
@@ -246,7 +248,7 @@ class _PortraitContent extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Card(
-                    color: Theme.of(context).cardColor,
+                    color: context.read<CameraViewModel>().cardColor ?? Theme.of(context).cardColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: Padding(
@@ -257,7 +259,7 @@ class _PortraitContent extends StatelessWidget {
                             .currentItem!
                             .value
                             .title!),
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: context.read<CameraViewModel>().textColor),
                       ),
                     ),
                   ),
@@ -558,9 +560,9 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
       alignment: Alignment.centerRight,
       children: [
         context.watch<CameraViewModel>().toggle == 1
-            ? SizedBox.shrink()
+            ? const SizedBox.shrink()
             : Material(
-                color: Theme.of(context).cardColor,
+                color: context.read<CameraViewModel>().cardColor ?? Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(30.0),
                 child: IconButton(
                   splashRadius: 19.0,
@@ -568,16 +570,16 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                   color: Colors.transparent.withOpacity(0),
                   icon: widget.prefixIcon != null
                       ? context.watch<CameraViewModel>().toggle == 1
-                          ? const Icon(
+                          ? Icon(
                               Icons.arrow_back_ios,
-                              color: Colors.white,
+                              color: context.read<CameraViewModel>().iconColor ?? Colors.white,
                             )
                           : widget.prefixIcon!
                       : Icon(
                           context.watch<CameraViewModel>().toggle == 1
                               ? Icons.arrow_back_ios
                               : widget.suffixIcon,
-                          color: Colors.white,
+                          color: context.read<CameraViewModel>().iconColor ?? Colors.white,
                           size: 35.0,
                         ),
                   onPressed: () {

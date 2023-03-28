@@ -1,7 +1,7 @@
 part of image_provider;
 
 class CameraViewOptions {
-  CameraViewOptions({this.cameraItems = const [],this.cameraItemsMap = const {}}){
+  CameraViewOptions({this.cameraItems = const [],this.cameraItemsMap = const {}, this.cardColor = Colors.red, this.textColor = Colors.white, this.iconColor = Colors.white}){
     cameraItemsMap = {
       for (final item in cameraItems) cameraItems.indexOf(item): item,
     };
@@ -9,4 +9,5 @@ class CameraViewOptions {
 
   Map<int,CameraItemMetadata> cameraItemsMap;
   final List<CameraItemMetadata> cameraItems;
+  final Color cardColor, textColor, iconColor;
 }

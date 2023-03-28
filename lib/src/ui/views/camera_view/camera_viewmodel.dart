@@ -20,6 +20,13 @@ class CameraViewModel with ChangeNotifier {
   }
 
   CameraViewOptions? _options;
+
+  Color? get cardColor => _options?.cardColor;
+
+  Color? get textColor => _options?.textColor;
+
+  Color? get iconColor => _options?.iconColor;
+  
   static List<CameraDescription> _availableCameras = [];
 
   CameraController? _controller;
