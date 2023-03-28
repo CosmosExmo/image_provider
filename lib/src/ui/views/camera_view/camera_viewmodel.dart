@@ -30,6 +30,23 @@ class CameraViewModel with ChangeNotifier {
 
   FlashMode? _flashType;
 
+  late AnimationController _animationController;
+
+  AnimationController get animationController => _animationController;
+
+  int _toggle = 0;
+
+  int get toggle => _toggle;
+
+  void setToggle(int value) {
+    _toggle = value;
+    notifyListeners();
+  }
+
+  setAnimationController(AnimationController value) {
+    _animationController = value;
+  }
+
   String? _lastImage;
 
   MapEntry<int, CameraItemMetadata>? get currentItem {
