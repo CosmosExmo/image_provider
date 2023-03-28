@@ -28,6 +28,10 @@ class CameraViewModel with ChangeNotifier {
 
   Map<int, CameraItemMetadata> get photoCheckerMap => _options!.cameraItemsMap;
 
+  List<CameraItemMetadata> get cameraItemsList => _options!.cameraItems;
+
+  bool get showPhotosButton => cameraItemsList.every((element) => element.title == null);
+
   FlashMode? _flashType;
 
   late AnimationController _animationController;
@@ -232,7 +236,9 @@ class CameraViewModel with ChangeNotifier {
 
   void returnData(BuildContext context) async {
     await disposeCamera();
+    if(photoCheckerMap.values.isNotEmpty){
     _imageExport?.images = photoCheckerMap.values.map((e) => e.contentData).toList();
+    }
     // ignore: use_build_context_synchronously
     Navigator.pop(context, _imageExport);
   }
