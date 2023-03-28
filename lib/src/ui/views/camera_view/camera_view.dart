@@ -1,12 +1,15 @@
 part of image_provider;
 
 class CameraView extends StatelessWidget {
-  const CameraView({Key? key}) : super(key: key);
-
+  const CameraView(
+    this._options, {
+    Key? key,
+  }) : super(key: key);
+  final CameraViewOptions? _options;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CameraViewModel(),
+      create: (_) => CameraViewModel(_options),
       builder: (context, child) {
         return const Scaffold(
           body: _PageLoadingWidget(),
@@ -171,7 +174,7 @@ class _PortraitContent extends StatelessWidget {
             color: Colors.black38,
             child: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -195,7 +198,7 @@ class _PortraitContent extends StatelessWidget {
                     const _SpacingWidget(),
                     InkWell(
                       onTap: context.read<CameraViewModel>().captureImage,
-                      child: const Icon(Icons.camera, size: 70),
+                      child: const Icon(Icons.camera, size: 60),
                     ),
                     const _SpacingWidget(),
                     InkWell(
@@ -209,6 +212,19 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          bottom: 0,
+          right: 0,
+          top: 0,
+          child: SafeArea(
+            child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 25, right: 5, left: 10),
+                child: _RollingGalleryShowCase(
+                    photoCheckerMap:
+                        context.watch<CameraViewModel>().photoCheckerMap)),
+          ),
+        ),
         const Positioned(
           top: 0,
           left: 0,
@@ -219,6 +235,36 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
+        if (context.watch<CameraViewModel>().hasTitle())
+          Positioned(
+            top: 0,
+            right: 0,
+            left: 0,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Card(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        (context
+                            .watch<CameraViewModel>()
+                            .currentItem!
+                            .value
+                            .title!),
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         Positioned(
           top: 0,
           right: 0,
@@ -461,7 +507,8 @@ class _CameraWidget extends StatelessWidget {
 }
 
 class _SpacingWidget extends StatelessWidget {
-  final Axis axis;
+  final Axis? axis;
+  // ignore: unused_element
   const _SpacingWidget({Key? key, this.axis = Axis.vertical}) : super(key: key);
 
   @override
@@ -471,5 +518,190 @@ class _SpacingWidget extends StatelessWidget {
     }
 
     return const SizedBox(height: 30);
+  }
+}
+
+class _RollingGalleryShowCase extends StatefulWidget {
+  final Map<int, CameraItemMetadata> photoCheckerMap;
+  final IconData? suffixIcon;
+  final Icon? prefixIcon;
+  final int animationDurationInMilli;
+
+  const _RollingGalleryShowCase({
+    Key? key,
+    this.suffixIcon = Icons.photo_library_sharp,
+    this.prefixIcon,
+    this.animationDurationInMilli = 375,
+    required this.photoCheckerMap,
+  }) : super(key: key);
+  @override
+  // ignore: library_private_types_in_public_api
+  _RollingGalleryShowCaseBarState createState() =>
+      _RollingGalleryShowCaseBarState();
+}
+
+class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
+    with SingleTickerProviderStateMixin {
+  @override
+  void initState() {
+    super.initState();
+    context.read<CameraViewModel>().setAnimationController(AnimationController(
+          vsync: this,
+          duration: Duration(milliseconds: widget.animationDurationInMilli),
+        ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.loose,
+      alignment: Alignment.centerRight,
+      children: [
+        context.watch<CameraViewModel>().toggle == 1
+            ? SizedBox.shrink()
+            : Material(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(30.0),
+                child: IconButton(
+                  splashRadius: 19.0,
+                  iconSize: 60,
+                  color: Colors.transparent.withOpacity(0),
+                  icon: widget.prefixIcon != null
+                      ? context.watch<CameraViewModel>().toggle == 1
+                          ? const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.white,
+                            )
+                          : widget.prefixIcon!
+                      : Icon(
+                          context.watch<CameraViewModel>().toggle == 1
+                              ? Icons.arrow_back_ios
+                              : widget.suffixIcon,
+                          color: Colors.white,
+                          size: 35.0,
+                        ),
+                  onPressed: () {
+                    if (context.read<CameraViewModel>().toggle == 0) {
+                      context.read<CameraViewModel>().setToggle(1);
+                      context
+                          .read<CameraViewModel>()
+                          .animationController
+                          .forward();
+                      return;
+                    }
+
+                    context.read<CameraViewModel>().setToggle(0);
+                    context
+                        .read<CameraViewModel>()
+                        .animationController
+                        .reverse();
+                  },
+                ),
+              ),
+        AnimatedContainer(
+          duration: Duration(milliseconds: widget.animationDurationInMilli),
+          height: (context.watch<CameraViewModel>().toggle == 0)
+              ? 0
+              : MediaQuery.of(context).size.height * 0.4,
+          width: (context.watch<CameraViewModel>().toggle == 0)
+              ? 0
+              : MediaQuery.of(context).size.width * 0.6,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.grey.shade800.withOpacity(0.8),
+          ),
+          child: Stack(
+            fit: StackFit.loose,
+            children: [
+              GridView.count(
+                crossAxisCount: 2,
+                padding: const EdgeInsets.all(20),
+                children: [
+                  if (context.watch<CameraViewModel>().toggle == 1)
+                    ...widget.photoCheckerMap.entries.map((item) {
+                      if (item.value.contentData == null) return Container();
+                      final data = item.value.contentData;
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 6.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Stack(
+                              fit: StackFit.loose,
+                              children: [
+                                Builder(builder: (context) {
+                                  // ignore: prefer_typing_uninitialized_variables
+                                  late final image;
+                                  if (data?.path != null) {
+                                    final file = File(data!.path!);
+                                    image = MemoryImage(file.readAsBytesSync());
+                                  } else {
+                                    image = const AssetImage(
+                                        'image_provider_assets/imgs/placeholder.jpg',
+                                        package: 'image_provider');
+                                  }
+                                  return ImageHolder(
+                                      image: DecorationImage(image: image),
+                                      child: Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .aspectRatio *
+                                              175,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .aspectRatio *
+                                              175,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              image: DecorationImage(
+                                                  image: image,
+                                                  fit: BoxFit.fill))));
+                                }),
+                                Positioned(
+                                  right: -2,
+                                  top: -2,
+                                  child: GestureDetector(
+                                      onTap: () => context
+                                          .read<CameraViewModel>()
+                                          .removeImageByIndex(item.key),
+                                      child: const Icon(Icons.cancel,
+                                          color: Colors.red, size: 18)),
+                                ),
+                              ],
+                            ),
+                            Text(item.value.title!),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                ],
+              ),
+              Positioned(
+                top: -6,
+                left: -6,
+                child: IconButton(
+                    onPressed: () {
+                      if (context.read<CameraViewModel>().toggle == 0) {
+                        context.read<CameraViewModel>().setToggle(1);
+                        context
+                            .read<CameraViewModel>()
+                            .animationController
+                            .forward();
+                        return;
+                      }
+                      context.read<CameraViewModel>().setToggle(0);
+                      context
+                          .read<CameraViewModel>()
+                          .animationController
+                          .reverse();
+                    },
+                    icon: const Icon(Icons.cancel)),
+              )
+            ],
+          ),
+        ),
+      ],
+    );
   }
 }

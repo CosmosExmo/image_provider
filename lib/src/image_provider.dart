@@ -2,21 +2,30 @@ part of image_provider;
 
 class ImageProvider {
   final BuildContext _context;
-  final RepositoryTypeSelectionWidget _widget;
+  final RepositoryTypeSelectionWidget? widget;
+  final RepositoryType? repositoryType;
+  final CameraViewOptions? options;
 
-  ImageProvider(this._context, this._widget);
+  ImageProvider(this._context, {this.widget, this.options, this.repositoryType})
+      : assert(widget != null || repositoryType != null,
+            'No repository type selected or widget provided');
 
   ImageExport? _imageExport;
 
   Future<RepositoryType?> get _pickRepository async {
-    final dialogService = DialogService();
+    if (widget != null) {
+      final dialogService = DialogService();
 
-    final result = await dialogService.showModalReturnData<RepositoryType>(
-      _context,
-      _widget,
-    );
-
-    return result;
+      final result = await dialogService.showModalReturnData<RepositoryType>(
+        _context,
+        widget!,
+      );
+      return result;
+    }
+    if (repositoryType != null) {
+      return repositoryType;
+    }
+    throw Exception("No repository type selected or widget provided");
   }
 
   Future<ImageExport?> getImages({int maxImage = 50}) async {
@@ -46,7 +55,7 @@ class ImageProvider {
     final images = await Navigator.push<ImageExport>(
       _context,
       MaterialPageRoute(
-        builder: (_) => const CameraView(),
+        builder: (_) => CameraView(options),
       ),
     );
 

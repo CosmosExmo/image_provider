@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_provider/src/app/enums.dart';
 import 'package:multi_image_picker2/multi_image_picker2.dart';
+
+import '../../image_provider.dart';
 
 @immutable
 class ImageCompressParams {
