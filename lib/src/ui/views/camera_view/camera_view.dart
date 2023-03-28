@@ -212,7 +212,7 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
+        if(!context.watch<CameraViewModel>().showPhotosButton) Positioned(
           bottom: 0,
           right: 0,
           top: 0,
