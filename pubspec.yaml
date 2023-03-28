@@ -23,7 +23,7 @@ dependencies:
   file_picker: ^5.2.4
   focused_image_widget:
     git:
-      url: "git@github.com:CosmosExmo/focused_image_widget.git"
+      url: "https://github.com/CosmosExmo/focused_image_widget.git"
 
   dialog_service:
     git:

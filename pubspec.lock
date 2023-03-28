@@ -175,7 +175,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "48da8635f1eeda2a93a3dba1d927c0b3e9928779"
-      url: "git@github.com:CosmosExmo/focused_image_widget.git"
+      url: "https://github.com/CosmosExmo/focused_image_widget.git"
     source: git
     version: "1.0.0"
   js:
