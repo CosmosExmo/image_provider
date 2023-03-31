@@ -672,7 +672,7 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                                 ),
                               ],
                             ),
-                            Text(item.value.title!),
+                            Text(item.value.title!,style: context.read<CameraViewModel>().galleryPhotoTitleTextStyle),
                           ],
                         ),
                       );
