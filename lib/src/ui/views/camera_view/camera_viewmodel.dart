@@ -13,6 +13,7 @@ import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
+
   CameraViewModel(this._options){
     _options ??= CameraViewOptions(
         cameraItems: List.generate(50, (index) => CameraItemMetadata()).toList()
@@ -26,7 +27,8 @@ class CameraViewModel with ChangeNotifier {
   Color? get textColor => _options?.textColor;
 
   Color? get iconColor => _options?.iconColor;
-  
+
+  TextStyle? get galleryPhotoTitleTextStyle => _options?.galleryPhotoTitleTextStyle;
   static List<CameraDescription> _availableCameras = [];
 
   CameraController? _controller;
