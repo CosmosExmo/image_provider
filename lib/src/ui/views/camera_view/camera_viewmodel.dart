@@ -13,11 +13,10 @@ import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
-
-  CameraViewModel(this._options){
+  CameraViewModel(this._options) {
     _options ??= CameraViewOptions(
-        cameraItems: List.generate(50, (index) => CameraItemMetadata()).toList()
-      );
+        cameraItems:
+            List.generate(50, (index) => CameraItemMetadata()).toList());
   }
 
   CameraViewOptions? _options;
@@ -28,7 +27,8 @@ class CameraViewModel with ChangeNotifier {
 
   Color? get iconColor => _options?.iconColor;
 
-  TextStyle? get galleryPhotoTitleTextStyle => _options?.galleryPhotoTitleTextStyle;
+  TextStyle? get galleryPhotoTitleTextStyle =>
+      _options?.galleryPhotoTitleTextStyle;
   static List<CameraDescription> _availableCameras = [];
 
   CameraController? _controller;
@@ -39,7 +39,8 @@ class CameraViewModel with ChangeNotifier {
 
   List<CameraItemMetadata> get cameraItemsList => _options!.cameraItems;
 
-  bool get showPhotosButton => cameraItemsList.every((element) => element.title == null);
+  bool get showPhotosButton =>
+      cameraItemsList.every((element) => element.title == null);
 
   FlashMode? _flashType;
 
@@ -63,10 +64,11 @@ class CameraViewModel with ChangeNotifier {
   String? _lastImage;
 
   MapEntry<int, CameraItemMetadata>? get currentItem {
-    if(photoCheckerMap.values.every((v) => v.contentData != null)){
+    if (photoCheckerMap.values.every((v) => v.contentData != null)) {
       return null;
     }
-    return photoCheckerMap.entries.firstWhere((element) => element.value.contentData == null);
+    return photoCheckerMap.entries
+        .firstWhere((element) => element.value.contentData == null);
   }
 
   bool _viewDidLoad = false;
@@ -101,6 +103,7 @@ class CameraViewModel with ChangeNotifier {
     _flashType = FlashMode.auto;
     _imageExport = ImageExport.camera();
     await requestCameraPermission();
+    await initializeCurrentPermission();
     await _initCamera();
     _viewDidLoad = true;
     notifyListeners();
@@ -146,6 +149,12 @@ class CameraViewModel with ChangeNotifier {
     _cameraPermissionStatus = permissionStatus;
   }
 
+  Future<void> initializeCurrentPermission() async {
+    final permissionStatus =
+        await _permissionService.initializeCurrentPermission();
+    _cameraPermissionStatus = permissionStatus;
+  }
+
   void setShowPictureTakenWidget(bool value) {
     _showPictureTakenWidget = value;
     notifyListeners();
@@ -165,7 +174,8 @@ class CameraViewModel with ChangeNotifier {
       final value = await getImageCompressed(params);
       final content = ContentData.fromData("jpg", value, path: imageFile!.path);
       _imageExport?.images?.add(content);
-      photoCheckerMap[currentItem!.key] = currentItem!.value.copyWith(contentData: content);
+      photoCheckerMap[currentItem!.key] =
+          currentItem!.value.copyWith(contentData: content);
       setShowPictureTakenWidget(false);
     } catch (_) {
       setShowPictureTakenWidget(false);
@@ -245,8 +255,9 @@ class CameraViewModel with ChangeNotifier {
 
   void returnData(BuildContext context) async {
     await disposeCamera();
-    if(photoCheckerMap.values.isNotEmpty){
-    _imageExport?.images = photoCheckerMap.values.map((e) => e.contentData).toList();
+    if (photoCheckerMap.values.isNotEmpty) {
+      _imageExport?.images =
+          photoCheckerMap.values.map((e) => e.contentData).toList();
     }
     // ignore: use_build_context_synchronously
     Navigator.pop(context, _imageExport);
