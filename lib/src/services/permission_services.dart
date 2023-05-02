@@ -27,4 +27,8 @@ class PermissionServices {
 
     return status;
   }
+
+  Future<PermissionStatus> initializeCurrentPermission() async {
+    return await Permission.camera.status;
+  }
 }
