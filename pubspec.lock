@@ -94,7 +94,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "6a2dc137fceb5bf082d5c2eebafbdb2a379239b3"
+      resolved-ref: "8b7028c0b6d280a46dc198660fb78da92529ae4b"
       url: "https://github.com/trailon/dialog_service.git"
     source: git
     version: "0.1.4"
