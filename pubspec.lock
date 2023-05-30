@@ -93,7 +93,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "6a2dc137fceb5bf082d5c2eebafbdb2a379239b3"
+      ref: HEAD
       resolved-ref: "6a2dc137fceb5bf082d5c2eebafbdb2a379239b3"
       url: "https://github.com/trailon/dialog_service.git"
     source: git
