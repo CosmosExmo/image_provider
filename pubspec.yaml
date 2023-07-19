@@ -24,8 +24,9 @@ dependencies:
     git:
       url: "https://github.com/trailon/permission_asker.git"
   focused_image_widget:
-    git:
-      url: "https://github.com/CosmosExmo/focused_image_widget.git"
+    git: 
+      url: "git@github.com:CosmosExmo/focused_image_widget.git"
+      ref: 60b142e44de4450a49e7cf558ebaea285b240786
 
   dialog_service:
     git:

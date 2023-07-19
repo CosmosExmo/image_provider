@@ -643,7 +643,7 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                                         package: 'image_provider');
                                   }
                                   return ImageHolder(
-                                      image: DecorationImage(image: image),
+                                      images: [DecorationImage(image: image)],
                                       child: Container(
                                           height: MediaQuery.of(context)
                                                   .size
