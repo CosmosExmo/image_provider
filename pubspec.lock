@@ -165,7 +165,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: d6efdc154b1fa1b5d37e327154bcce0f440a29ae
+      ref: HEAD
       resolved-ref: d6efdc154b1fa1b5d37e327154bcce0f440a29ae
       url: "https://github.com/trailon/focused_image_widget.git"
     source: git
