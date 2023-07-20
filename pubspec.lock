@@ -165,9 +165,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "60b142e44de4450a49e7cf558ebaea285b240786"
-      resolved-ref: "60b142e44de4450a49e7cf558ebaea285b240786"
-      url: "git@github.com:CosmosExmo/focused_image_widget.git"
+      ref: d6efdc154b1fa1b5d37e327154bcce0f440a29ae
+      resolved-ref: d6efdc154b1fa1b5d37e327154bcce0f440a29ae
+      url: "https://github.com/trailon/focused_image_widget.git"
     source: git
     version: "1.0.0"
   js:
