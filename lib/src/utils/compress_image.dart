@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:multi_image_picker2/multi_image_picker2.dart';
 
 import 'package:image_provider/src/app/enums.dart';
 
@@ -25,6 +24,10 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
   }
 
   if (params.repositoryType == RepositoryType.gallery) {
+    if (params.imageData is String) {
+      returnData = File(params.imageData).readAsBytesSync();
+      return returnData;
+    }
     returnData = await getUInt8List(params.imageData);
   }
 
@@ -38,11 +41,8 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
   return compressedImage;
 }
 
-Future<Uint8List> getUInt8List(Asset resimData) async {
-  List<int> uInt8List = [];
-  ByteData byteData = await resimData.getByteData();
-  uInt8List = byteData.buffer.asUint8List();
-  return uInt8List as Uint8List;
+Future<Uint8List> getUInt8List(XFile resimData) async {
+  return await resimData.readAsBytes();
 }
 
 Future<Uint8List?> compressList(Uint8List list) async {

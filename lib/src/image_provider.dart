@@ -8,6 +8,8 @@ class ImageProvider {
 
   ImageExport? _imageExport;
 
+  final ImagePickers imagesPicker = ImagePickers();
+
   Future<RepositoryType?> get _pickRepository async {
     final dialogService = DialogService();
 
@@ -55,16 +57,21 @@ class ImageProvider {
 
   Future<void> _getGalleryImages(int maxImage) async {
     try {
-      final images = await MultiImagePicker.pickImages(
-        maxImages: maxImage,
+      final images = await ImagePickers.pickerPaths(
+        galleryMode: GalleryMode.image,
+        selectCount: maxImage,
+        showCamera: true,
       );
 
       final imageExport = ImageExport.gallery();
-
+      // ignore: unnecessary_null_comparison
+      if (images == null) {
+        return;
+      }
       await Future.wait<void>(List.from(
-        images.map<Future<void>>((item) async {
+        images.map<Future<void>>((Media item) async {
           final params = ImageCompressParams(
-              repositoryType: RepositoryType.gallery, imageData: item);
+              repositoryType: RepositoryType.gallery, imageData: item.path);
           final value = await getImageCompressed(params);
           final content = ContentData.fromData("jpg", value);
           imageExport.images?.add(content);
@@ -72,7 +79,7 @@ class ImageProvider {
       ));
 
       _imageExport = imageExport;
-    } on NoImagesSelectedException catch (_) {
+    } on Exception catch (_) {
       return;
     }
   }
@@ -104,7 +111,7 @@ class ImageProvider {
       ));
 
       _imageExport = imageExport;
-    } on NoImagesSelectedException catch (_) {
+    } on Exception catch (_) {
       return;
     }
   }

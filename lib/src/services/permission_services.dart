@@ -12,6 +12,13 @@ class PermissionServices {
       status = await Permission.storage.isGranted;
     }
 
+    // bool statusMedia = await Permission.mediaLibrary.isGranted;
+
+    // if (!statusMedia) {
+    //   await Permission.mediaLibrary.request();
+    //   statusMedia = await Permission.mediaLibrary.isGranted;
+    // }
+
     return status;
   }
 
@@ -19,7 +26,7 @@ class PermissionServices {
     if (Platform.isIOS) {
       var iosInfo = await DeviceInfoPlugin().iosInfo;
       var version = iosInfo.systemVersion;
-      final versionDouble = double.tryParse(version!.substring(0, 4));
+      final versionDouble = double.tryParse(version.substring(0, 4));
       if (versionDouble != null && versionDouble >= 12.0) {
         return PermissionStatus.granted;
       }
