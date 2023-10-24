@@ -8,7 +8,7 @@ class ImageProvider {
 
   ImageExport? _imageExport;
 
-  final ImagePickers imagesPicker = ImagePickers();
+  final ImagePicker imagesPicker = ImagePicker();
 
   Future<RepositoryType?> get _pickRepository async {
     final dialogService = DialogService();
@@ -57,12 +57,7 @@ class ImageProvider {
 
   Future<void> _getGalleryImages(int maxImage) async {
     try {
-      final images = await ImagePickers.pickerPaths(
-        galleryMode: GalleryMode.image,
-        selectCount: maxImage,
-        language: Language.english,
-        showCamera: true,
-      );
+      final images = await imagesPicker.pickMultiImage();
 
       final imageExport = ImageExport.gallery();
       // ignore: unnecessary_null_comparison
@@ -70,7 +65,7 @@ class ImageProvider {
         return;
       }
       await Future.wait<void>(List.from(
-        images.map<Future<void>>((Media item) async {
+        images.map<Future<void>>((XFile item) async {
           final params = ImageCompressParams(
               repositoryType: RepositoryType.gallery, imageData: item.path);
           final value = await getImageCompressed(params);

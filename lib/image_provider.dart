@@ -8,7 +8,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:image_pickers/image_pickers.dart';
+import 'package:image_picker/image_picker.dart';
+
 import 'package:image_provider/src/app/enums.dart';
 import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/ui/views/camera_view/camera_viewmodel.dart';

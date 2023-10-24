@@ -15,7 +15,7 @@ dependencies:
   provider: ^6.0.5
   camera: ^0.10.5+5
   native_device_orientation: ^1.2.1
-  image_pickers: ^2.0.4+5
+  # image_pickers: ^2.0.4+5
   flutter_image_compress: ^2.1.0
   permission_handler: ^11.0.1
   path_provider: ^2.1.1
@@ -27,6 +27,7 @@ dependencies:
     git:
       url: https://github.com/10urbulut/dialog_service.git
       ref: 86043c963379470e1804aefddeb2e72dcf49a303
+  image_picker: ^1.0.4
 
 dev_dependencies:
   flutter_test:
