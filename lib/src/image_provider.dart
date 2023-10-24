@@ -60,6 +60,7 @@ class ImageProvider {
       final images = await ImagePickers.pickerPaths(
         galleryMode: GalleryMode.image,
         selectCount: maxImage,
+        language: Language.english,
         showCamera: true,
       );
 
