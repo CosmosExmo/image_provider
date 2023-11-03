@@ -7,7 +7,7 @@ import 'package:camera/camera.dart';
 import 'package:dialog_service/dialog_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:focused_image_widget/focused_image_widget.dart';
 import 'package:image_provider/src/models/image_export.dart';

@@ -293,11 +293,12 @@ packages:
   multi_image_picker_plus:
     dependency: "direct main"
     description:
-      name: multi_image_picker_plus
-      sha256: "3077e64dcc312cd4d93c35d4170d739bfabf5c70a87783b7da55fd2cedc0e4e6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
+      path: "."
+      ref: HEAD
+      resolved-ref: "130b364dab9bb873eeca345049fa498d05c4fd45"
+      url: "https://github.com/trailon/multi_image_picker_plus.git"
+    source: git
+    version: "0.0.1"
   native_device_orientation:
     dependency: "direct main"
     description:
