@@ -9,7 +9,6 @@ class ImageProvider {
   ImageProvider(this._context, {this.widget, this.options, this.repositoryType})
       : assert(widget != null || repositoryType != null,
             'No repository type selected or widget provided');
-
   ImageExport? _imageExport;
 
   Future<RepositoryType?> get _pickRepository async {
@@ -64,26 +63,132 @@ class ImageProvider {
 
   Future<void> _getGalleryImages(int maxImage) async {
     try {
-      final images = await MultiImagePicker.pickImages(
-        maxImages: maxImage,
+      final permissionPanager = PermissionManager();
+      await permissionPanager.requestMedia(photos: true);
+      await permissionPanager.requestMediaLocation();
+
+      // ignore: use_build_context_synchronously
+      final ColorScheme colorScheme = Theme.of(_context).colorScheme;
+
+      List<Asset> resultList = <Asset>[];
+
+      const AlbumSetting albumSetting = AlbumSetting(
+        fetchResults: {
+          PHFetchResult(
+            type: PHAssetCollectionType.smartAlbum,
+            subtype: PHAssetCollectionSubtype.smartAlbumUserLibrary,
+          ),
+          PHFetchResult(
+            type: PHAssetCollectionType.smartAlbum,
+            subtype: PHAssetCollectionSubtype.smartAlbumFavorites,
+          ),
+          PHFetchResult(
+            type: PHAssetCollectionType.album,
+            subtype: PHAssetCollectionSubtype.albumRegular,
+          ),
+          PHFetchResult(
+            type: PHAssetCollectionType.smartAlbum,
+            subtype: PHAssetCollectionSubtype.smartAlbumSelfPortraits,
+          ),
+          PHFetchResult(
+            type: PHAssetCollectionType.smartAlbum,
+            subtype: PHAssetCollectionSubtype.smartAlbumPanoramas,
+          ),
+          PHFetchResult(
+            type: PHAssetCollectionType.smartAlbum,
+            subtype: PHAssetCollectionSubtype.smartAlbumVideos,
+          ),
+        },
+      );
+      SelectionSetting selectionSetting = SelectionSetting(
+        min: 1,
+        max: maxImage,
+        unselectOnReachingMax: true,
+      );
+      const DismissSetting dismissSetting = DismissSetting(
+        enabled: true,
+        allowSwipe: true,
+      );
+      final ThemeSetting themeSetting = ThemeSetting(
+        backgroundColor: colorScheme.background,
+        selectionFillColor: colorScheme.primary,
+        selectionStrokeColor: colorScheme.onPrimary,
+        previewSubtitleAttributes: const TitleAttribute(fontSize: 12.0),
+        previewTitleAttributes: TitleAttribute(
+          foregroundColor: colorScheme.primary,
+        ),
+        albumTitleAttributes: TitleAttribute(
+          foregroundColor: colorScheme.primary,
+        ),
+      );
+      const ListSetting listSetting = ListSetting(
+        spacing: 5.0,
+        cellsPerRow: 4,
+      );
+      final CupertinoSettings iosSettings = CupertinoSettings(
+        fetch: const FetchSetting(album: albumSetting),
+        theme: themeSetting,
+        selection: selectionSetting,
+        dismiss: dismissSetting,
+        list: listSetting,
+      );
+
+      /// PICK MULTIPLE IMAGES FROM GALLERY
+      resultList = await MultiImagePicker.pickImages(
+        selectedAssets: resultList,
+        cupertinoOptions: CupertinoOptions(
+          doneButton:
+              UIBarButtonItem(title: 'Onayla', tintColor: colorScheme.primary),
+          cancelButton:
+              UIBarButtonItem(title: 'İptal', tintColor: colorScheme.primary),
+          albumButtonColor: colorScheme.primary,
+          settings: iosSettings,
+        ),
+        materialOptions: MaterialOptions(
+          actionBarColor: colorScheme.surface,
+          actionBarTitleColor: colorScheme.onSurface,
+          statusBarColor: colorScheme.surface,
+          actionBarTitle: "Resim Seçin",
+          allViewTitle: "Tüm Resimler",
+          maxImages: maxImage,
+          useDetailsView: false,
+          selectCircleStrokeColor: colorScheme.primary,
+        ),
       );
 
       final imageExport = ImageExport.gallery();
 
-      await Future.wait<void>(List.from(
-        images.map<Future<void>>((item) async {
-          final params = ImageCompressParams(
-              repositoryType: RepositoryType.gallery, imageData: item);
-          final value = await getImageCompressed(params);
-          final content = ContentData.fromData("jpg", value);
-          imageExport.images?.add(content);
-        }),
-      ));
-
+      //imageExport.imageassets = resultList;
+      final paramList = List.generate(
+          resultList.length,
+          (index) => ImageCompressParams(
+              repositoryType: RepositoryType.gallery,
+              imageData: resultList.elementAt(index)));
+      final compressedList = await getImageCompressedList(paramList);
+      for (var compressedImg in compressedList) {
+        final content = ContentData.fromData("jpg", compressedImg);
+        imageExport.imgadder = content;
+      }
       _imageExport = imageExport;
-    } on NoImagesSelectedException catch (_) {
+    } catch (_) {
       return;
     }
+  }
+
+  static Future<List<ContentData>> getCompressedImageList(
+      {required List<Asset> assetimgs}) async {
+    List<ContentData> contentImages = [];
+    final paramList = List.generate(
+        assetimgs.length,
+        (index) => ImageCompressParams(
+            repositoryType: RepositoryType.gallery,
+            imageData: assetimgs.elementAt(index)));
+    final compressedList = await getImageCompressedList(paramList);
+    for (var compressedImg in compressedList) {
+      final content = ContentData.fromData("jpg", compressedImg);
+      contentImages.add(content);
+    }
+    return contentImages;
   }
 
   Future<void> _getImagesFromFile() async {
@@ -108,12 +213,12 @@ class ImageProvider {
             item.bytes,
             fileName: item.name,
           );
-          imageExport.images?.add(content);
+          imageExport.imgadder = content;
         }),
       ));
 
       _imageExport = imageExport;
-    } on NoImagesSelectedException catch (_) {
+    } catch (_) {
       return;
     }
   }
