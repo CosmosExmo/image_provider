@@ -6,11 +6,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_provider/image_provider.dart';
-import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:image_provider/src/utils/get_package_info.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class CameraViewModel with ChangeNotifier {
   CameraViewModel(this._options) {
@@ -146,7 +144,8 @@ class CameraViewModel with ChangeNotifier {
 
   Future<void> requestCameraPermission() async {
     final permissionStatus = await _permissionService.getCameraRequest();
-    _cameraPermissionStatus = permissionStatus;
+    _cameraPermissionStatus =
+        permissionStatus ? PermissionStatus.granted : PermissionStatus.denied;
   }
 
   Future<void> initializeCurrentPermission() async {
@@ -173,7 +172,7 @@ class CameraViewModel with ChangeNotifier {
           repositoryType: RepositoryType.camera, imageData: imageFile?.path);
       final value = await getImageCompressed(params);
       final content = ContentData.fromData("jpg", value, path: imageFile!.path);
-      _imageExport?.images?.add(content);
+      _imageExport?.imgadder = content;
       photoCheckerMap[currentItem!.key] =
           currentItem!.value.copyWith(contentData: content);
       setShowPictureTakenWidget(false);
@@ -256,10 +255,9 @@ class CameraViewModel with ChangeNotifier {
   void returnData(BuildContext context) async {
     await disposeCamera();
     if (photoCheckerMap.values.isNotEmpty) {
-      _imageExport?.images =
+      _imageExport?.imgssetter =
           photoCheckerMap.values.map((e) => e.contentData).toList();
     }
-    // ignore: use_build_context_synchronously
     Navigator.pop(context, _imageExport);
   }
 
