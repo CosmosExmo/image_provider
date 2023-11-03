@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:multi_image_picker2/multi_image_picker2.dart';
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
 import '../../image_provider.dart';
 
@@ -15,6 +15,26 @@ class ImageCompressParams {
     required this.repositoryType,
     required this.imageData,
   });
+}
+
+Future<List<Uint8List>> getImageCompressedList(
+    List<ImageCompressParams> params) async {
+  List<Uint8List> returnData = [];
+
+  for (var param in params) {
+    if (param.repositoryType == RepositoryType.camera) {
+      returnData.add(File(param.imageData).readAsBytesSync());
+    }
+
+    if (param.repositoryType == RepositoryType.gallery) {
+      returnData.add(await getUInt8List(param.imageData));
+    }
+
+    if (param.repositoryType == RepositoryType.files) {
+      returnData.add(param.imageData.bytes);
+    }
+  }
+  return returnData;
 }
 
 Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
@@ -40,7 +60,7 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
 
 Future<Uint8List> getUInt8List(Asset resimData) async {
   List<int> uInt8List = [];
-  ByteData byteData = await resimData.getByteData();
+  ByteData byteData = await resimData.getThumbByteData(400, 600);
   uInt8List = byteData.buffer.asUint8List();
   return uInt8List as Uint8List;
 }

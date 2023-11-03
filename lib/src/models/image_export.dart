@@ -1,46 +1,55 @@
 import 'dart:typed_data';
 
+import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+
 import '../../image_provider.dart';
 
 class ImageExport {
   final RepositoryType? repositoryType;
-  List<ContentData?>? images;
+  List<ContentData?>? _images;
+  List<Asset>? imageassets;
 
-  bool get hasImage => images != null && images!.isNotEmpty;
+  set imgssetter(List<ContentData?>? value) {
+    _images = value;
+  }
+
+  set imgadder(ContentData? value) {
+    _images!.add(value);
+  }
+
+  List<ContentData?> get images =>
+      (_images ?? <ContentData>[]).where((img) => img != null).toList();
+
+  bool get hasImage => _images != null && _images!.isNotEmpty;
 
   ImageExport({
     this.repositoryType,
-    this.images,
   }) {
-    images = [];
+    _images = [];
   }
 
   ImageExport.camera({
     this.repositoryType = RepositoryType.camera,
-    this.images,
   }) {
-    images = [];
+    _images = [];
   }
 
   ImageExport.gallery({
     this.repositoryType = RepositoryType.gallery,
-    this.images,
   }) {
-    images = [];
+    _images = [];
   }
 
   ImageExport.local({
     this.repositoryType = RepositoryType.local,
-    this.images,
   }) {
-    images = [];
+    _images = [];
   }
 
   ImageExport.files({
     this.repositoryType = RepositoryType.files,
-    this.images,
   }) {
-    images = [];
+    _images = [];
   }
 }
 

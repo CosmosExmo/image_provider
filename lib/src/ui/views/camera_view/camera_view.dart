@@ -129,12 +129,12 @@ class _NoPermissionView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(
+        const Positioned.fill(
             child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
+            children: [
               Text(
                 "Kamerayı kullanabilmek için gerekli izinlerin verilmesi gerekmektedir. Lütfen cihazınızın ayarlar menüsünden gerekli izinlerin verildiğine emin olun.",
                 textAlign: TextAlign.center,
@@ -214,19 +214,20 @@ class _PortraitContent extends StatelessWidget {
             ),
           ),
         ),
-        if(!context.watch<CameraViewModel>().showPhotosButton) Positioned(
-          bottom: 0,
-          right: 0,
-          top: 0,
-          child: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 25, right: 5, left: 10),
-                child: _RollingGalleryShowCase(
-                    photoCheckerMap:
-                        context.watch<CameraViewModel>().photoCheckerMap)),
+        if (!context.watch<CameraViewModel>().showPhotosButton)
+          Positioned(
+            bottom: 0,
+            right: 0,
+            top: 0,
+            child: SafeArea(
+              child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 25, right: 5, left: 10),
+                  child: _RollingGalleryShowCase(
+                      photoCheckerMap:
+                          context.watch<CameraViewModel>().photoCheckerMap)),
+            ),
           ),
-        ),
         const Positioned(
           top: 0,
           left: 0,
@@ -248,7 +249,8 @@ class _PortraitContent extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Card(
-                    color: context.read<CameraViewModel>().cardColor ?? Theme.of(context).cardColor,
+                    color: context.read<CameraViewModel>().cardColor ??
+                        Theme.of(context).cardColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12)),
                     child: Padding(
@@ -259,7 +261,8 @@ class _PortraitContent extends StatelessWidget {
                             .currentItem!
                             .value
                             .title!),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: context.read<CameraViewModel>().textColor),
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            color: context.read<CameraViewModel>().textColor),
                       ),
                     ),
                   ),
@@ -510,7 +513,6 @@ class _CameraWidget extends StatelessWidget {
 
 class _SpacingWidget extends StatelessWidget {
   final Axis? axis;
-  // ignore: unused_element
   const _SpacingWidget({Key? key, this.axis = Axis.vertical}) : super(key: key);
 
   @override
@@ -562,7 +564,8 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
         context.watch<CameraViewModel>().toggle == 1
             ? const SizedBox.shrink()
             : Material(
-                color: context.read<CameraViewModel>().cardColor ?? Theme.of(context).cardColor,
+                color: context.read<CameraViewModel>().cardColor ??
+                    Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(30.0),
                 child: IconButton(
                   splashRadius: 19.0,
@@ -572,14 +575,17 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                       ? context.watch<CameraViewModel>().toggle == 1
                           ? Icon(
                               Icons.arrow_back_ios,
-                              color: context.read<CameraViewModel>().iconColor ?? Colors.white,
+                              color:
+                                  context.read<CameraViewModel>().iconColor ??
+                                      Colors.white,
                             )
                           : widget.prefixIcon!
                       : Icon(
                           context.watch<CameraViewModel>().toggle == 1
                               ? Icons.arrow_back_ios
                               : widget.suffixIcon,
-                          color: context.read<CameraViewModel>().iconColor ?? Colors.white,
+                          color: context.read<CameraViewModel>().iconColor ??
+                              Colors.white,
                           size: 35.0,
                         ),
                   onPressed: () {
@@ -643,7 +649,7 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                                         package: 'image_provider');
                                   }
                                   return ImageHolder(
-                                      image: DecorationImage(image: image),
+                                      images: [DecorationImage(image: image)],
                                       child: Container(
                                           height: MediaQuery.of(context)
                                                   .size
@@ -672,7 +678,10 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                                 ),
                               ],
                             ),
-                            Text(item.value.title!,style: context.read<CameraViewModel>().galleryPhotoTitleTextStyle),
+                            Text(item.value.title!,
+                                style: context
+                                    .read<CameraViewModel>()
+                                    .galleryPhotoTitleTextStyle),
                           ],
                         ),
                       );
