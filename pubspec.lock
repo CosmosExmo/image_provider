@@ -124,9 +124,11 @@ packages:
   dialog_service:
     dependency: "direct main"
     description:
-      path: "/Users/emircanurfa/dev/flutter_packages/dialog_service"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: c4bc58bdd2d3af2d655b5865df3aa74786de9cf9
+      url: "https://github.com/trailon/dialog_service.git"
+    source: git
     version: "0.1.4"
   fake_async:
     dependency: transitive
