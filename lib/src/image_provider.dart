@@ -145,9 +145,9 @@ class ImageProvider {
           settings: iosSettings,
         ),
         materialOptions: MaterialOptions(
-          actionBarColor: colorScheme.surface,
-          actionBarTitleColor: colorScheme.onSurface,
-          statusBarColor: colorScheme.surface,
+          actionBarColor: colorScheme.primary,
+          actionBarTitleColor: colorScheme.onPrimary,
+          statusBarColor: colorScheme.primary,
           actionBarTitle: "Resim Seçin",
           allViewTitle: "Tüm Resimler",
           maxImages: maxImage,
