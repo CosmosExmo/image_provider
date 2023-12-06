@@ -13,6 +13,8 @@ class ImageProvider {
             'No repository type selected or widget provided');
   ImageExport? _imageExport;
 
+  final ImagePicker imagesPicker = ImagePicker();
+
   Future<RepositoryType?> get _pickRepository async {
     if (widget != null) {
       final dialogService = DialogService();
@@ -222,6 +224,7 @@ class ImageProvider {
 
       _imageExport = imageExport;
     } catch (_) {
+
       return;
     }
   }

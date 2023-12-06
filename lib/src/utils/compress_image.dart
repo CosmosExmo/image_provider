@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 
+
 import '../../image_provider.dart';
 
 @immutable
@@ -45,6 +46,10 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
   }
 
   if (params.repositoryType == RepositoryType.gallery) {
+    if (params.imageData is String) {
+      returnData = File(params.imageData).readAsBytesSync();
+      return returnData;
+    }
     returnData = await getUInt8List(params.imageData);
   }
 
@@ -63,6 +68,7 @@ Future<Uint8List> getUInt8List(Asset resimData) async {
   ByteData byteData = await resimData.getThumbByteData(400, 600);
   uInt8List = byteData.buffer.asUint8List();
   return uInt8List as Uint8List;
+
 }
 
 Future<Uint8List?> compressList(Uint8List list) async {
