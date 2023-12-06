@@ -13,8 +13,6 @@ class ImageProvider {
             'No repository type selected or widget provided');
   ImageExport? _imageExport;
 
-  final ImagePicker imagesPicker = ImagePicker();
-
   Future<RepositoryType?> get _pickRepository async {
     if (widget != null) {
       final dialogService = DialogService();
@@ -150,9 +148,9 @@ class ImageProvider {
           settings: iosSettings,
         ),
         materialOptions: MaterialOptions(
-          actionBarColor: colorScheme.primary,
-          actionBarTitleColor: colorScheme.onPrimary,
-          statusBarColor: colorScheme.primary,
+          actionBarColor: colorSchemeTheme.primary,
+          actionBarTitleColor: colorSchemeTheme.onPrimary,
+          statusBarColor: colorSchemeTheme.primary,
           actionBarTitle: "Resim Seçin",
           allViewTitle: "Tüm Resimler",
           maxImages: maxImage,
