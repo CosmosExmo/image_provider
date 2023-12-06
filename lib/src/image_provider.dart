@@ -5,8 +5,10 @@ class ImageProvider {
   final RepositoryTypeSelectionWidget? widget;
   final RepositoryType? repositoryType;
   final CameraViewOptions? options;
+  final ColorScheme? colorScheme;
 
-  ImageProvider(this._context, {this.widget, this.options, this.repositoryType})
+  ImageProvider(this._context,
+      {this.widget, this.options, this.repositoryType, this.colorScheme})
       : assert(widget != null || repositoryType != null,
             'No repository type selected or widget provided');
   ImageExport? _imageExport;
@@ -67,8 +69,9 @@ class ImageProvider {
       await permissionPanager.requestMedia(photos: true);
       await permissionPanager.requestMediaLocation();
 
-      // ignore: use_build_context_synchronously
-      final ColorScheme colorScheme = Theme.of(_context).colorScheme;
+      final ColorScheme colorSchemeTheme =
+          // ignore: use_build_context_synchronously
+          colorScheme ?? Theme.of(_context).colorScheme;
 
       List<Asset> resultList = <Asset>[];
 
@@ -110,15 +113,15 @@ class ImageProvider {
         allowSwipe: true,
       );
       final ThemeSetting themeSetting = ThemeSetting(
-        backgroundColor: colorScheme.background,
-        selectionFillColor: colorScheme.primary,
-        selectionStrokeColor: colorScheme.onPrimary,
+        backgroundColor: colorSchemeTheme.background,
+        selectionFillColor: colorSchemeTheme.primary,
+        selectionStrokeColor: colorSchemeTheme.onPrimary,
         previewSubtitleAttributes: const TitleAttribute(fontSize: 12.0),
         previewTitleAttributes: TitleAttribute(
-          foregroundColor: colorScheme.primary,
+          foregroundColor: colorSchemeTheme.primary,
         ),
         albumTitleAttributes: TitleAttribute(
-          foregroundColor: colorScheme.primary,
+          foregroundColor: colorSchemeTheme.primary,
         ),
       );
       const ListSetting listSetting = ListSetting(
@@ -137,22 +140,22 @@ class ImageProvider {
       resultList = await MultiImagePicker.pickImages(
         selectedAssets: resultList,
         cupertinoOptions: CupertinoOptions(
-          doneButton:
-              UIBarButtonItem(title: 'Onayla', tintColor: colorScheme.primary),
-          cancelButton:
-              UIBarButtonItem(title: 'İptal', tintColor: colorScheme.primary),
-          albumButtonColor: colorScheme.primary,
+          doneButton: UIBarButtonItem(
+              title: 'Onayla', tintColor: colorSchemeTheme.primary),
+          cancelButton: UIBarButtonItem(
+              title: 'İptal', tintColor: colorSchemeTheme.primary),
+          albumButtonColor: colorSchemeTheme.primary,
           settings: iosSettings,
         ),
         materialOptions: MaterialOptions(
-          actionBarColor: colorScheme.surface,
-          actionBarTitleColor: colorScheme.onSurface,
-          statusBarColor: colorScheme.surface,
+          actionBarColor: colorSchemeTheme.surface,
+          actionBarTitleColor: colorSchemeTheme.onSurface,
+          statusBarColor: colorSchemeTheme.surface,
           actionBarTitle: "Resim Seçin",
           allViewTitle: "Tüm Resimler",
           maxImages: maxImage,
           useDetailsView: false,
-          selectCircleStrokeColor: colorScheme.primary,
+          selectCircleStrokeColor: colorSchemeTheme.primary,
         ),
       );
 
