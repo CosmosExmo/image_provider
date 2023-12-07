@@ -148,9 +148,9 @@ class ImageProvider {
           settings: iosSettings,
         ),
         materialOptions: MaterialOptions(
-          actionBarColor: colorScheme.primary,
-          actionBarTitleColor: colorScheme.onPrimary,
-          statusBarColor: colorScheme.primary,
+          actionBarColor: colorSchemeTheme.primary,
+          actionBarTitleColor: colorSchemeTheme.onPrimary,
+          statusBarColor: colorSchemeTheme.primary,
           actionBarTitle: "Resim Seçin",
           allViewTitle: "Tüm Resimler",
           maxImages: maxImage,
@@ -222,6 +222,7 @@ class ImageProvider {
 
       _imageExport = imageExport;
     } catch (_) {
+
       return;
     }
   }
