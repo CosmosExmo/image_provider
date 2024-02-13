@@ -1,4 +1,4 @@
-part of image_provider;
+part of '../../../../image_provider.dart';
 
 class RepositoryTypeSelectionWidget extends StatelessWidget {
   final Text title;
@@ -8,14 +8,14 @@ class RepositoryTypeSelectionWidget extends StatelessWidget {
   final Text? localOption;
   final bool showLocalOption;
   const RepositoryTypeSelectionWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.cameraOption,
     required this.galleryOption,
     required this.backButton,
     this.showLocalOption = false,
     this.localOption,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

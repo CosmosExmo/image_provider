@@ -1,4 +1,4 @@
-part of image_provider;
+part of '../../image_provider.dart';
 
 class CameraItemMetadata {
   final String? title;

@@ -12,11 +12,11 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.5
-  camera: ^0.10.1
-  native_device_orientation: ^1.1.4
+  camera: ^0.10.5+9
+  native_device_orientation: ^2.0.3
   flutter_image_compress: ^2.1.0
   path_provider: ^2.0.11
-  multi_image_picker_plus: #^0.0.3
+  multi_image_picker_plus:
     git:
       url: https://github.com/trailon/multi_image_picker_plus.git
 
@@ -36,7 +36,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^3.0.1
 flutter:
   uses-material-design: true
 
