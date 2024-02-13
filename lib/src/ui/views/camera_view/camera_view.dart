@@ -1,12 +1,10 @@
-// ignore_for_file: unused_element
-
-part of image_provider;
+part of '../../../../image_provider.dart';
 
 class CameraView extends StatelessWidget {
   const CameraView(
     this._options, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
   final CameraViewOptions? _options;
   @override
   Widget build(BuildContext context) {
@@ -22,7 +20,7 @@ class CameraView extends StatelessWidget {
 }
 
 class _PageLoadingWidget extends StatefulWidget {
-  const _PageLoadingWidget({Key? key}) : super(key: key);
+  const _PageLoadingWidget();
 
   @override
   __PageLoadingWidgetState createState() => __PageLoadingWidgetState();
@@ -66,7 +64,7 @@ class __PageLoadingWidgetState extends State<_PageLoadingWidget>
 }
 
 class _ViewWidgets extends StatelessWidget {
-  const _ViewWidgets({Key? key}) : super(key: key);
+  const _ViewWidgets();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +90,7 @@ class _ViewWidgets extends StatelessWidget {
 }
 
 class _CameraViewContent extends StatelessWidget {
-  const _CameraViewContent({Key? key}) : super(key: key);
+  const _CameraViewContent();
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +121,7 @@ class _CameraViewContent extends StatelessWidget {
 }
 
 class _NoPermissionView extends StatelessWidget {
-  const _NoPermissionView({Key? key}) : super(key: key);
+  const _NoPermissionView();
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +159,7 @@ class _NoPermissionView extends StatelessWidget {
 }
 
 class _PortraitContent extends StatelessWidget {
-  const _PortraitContent({Key? key}) : super(key: key);
+  const _PortraitContent();
 
   @override
   Widget build(BuildContext context) {
@@ -289,7 +287,7 @@ class _PortraitContent extends StatelessWidget {
 }
 
 class _LandscapeContent extends StatelessWidget {
-  const _LandscapeContent({Key? key}) : super(key: key);
+  const _LandscapeContent();
 
   @override
   Widget build(BuildContext context) {
@@ -375,7 +373,7 @@ class _LandscapeContent extends StatelessWidget {
 }
 
 class _FlashToggleButton extends StatelessWidget {
-  const _FlashToggleButton({Key? key}) : super(key: key);
+  const _FlashToggleButton();
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +426,7 @@ class _FlashToggleButton extends StatelessWidget {
 
 class _CameraWidget extends StatelessWidget {
   final int turns;
-  const _CameraWidget({Key? key, required this.turns}) : super(key: key);
+  const _CameraWidget({required this.turns});
 
   @override
   Widget build(BuildContext context) {
@@ -513,7 +511,8 @@ class _CameraWidget extends StatelessWidget {
 
 class _SpacingWidget extends StatelessWidget {
   final Axis? axis;
-  const _SpacingWidget({Key? key, this.axis = Axis.vertical}) : super(key: key);
+  // ignore: unused_element
+  const _SpacingWidget({this.axis = Axis.vertical});
 
   @override
   Widget build(BuildContext context) {
@@ -530,14 +529,16 @@ class _RollingGalleryShowCase extends StatefulWidget {
   final IconData? suffixIcon;
   final Icon? prefixIcon;
   final int animationDurationInMilli;
-
+  
   const _RollingGalleryShowCase({
-    Key? key,
+    // ignore: unused_element
     this.suffixIcon = Icons.photo_library_sharp,
+    // ignore: unused_element
     this.prefixIcon,
+    // ignore: unused_element
     this.animationDurationInMilli = 375,
     required this.photoCheckerMap,
-  }) : super(key: key);
+  });
   @override
   // ignore: library_private_types_in_public_api
   _RollingGalleryShowCaseBarState createState() =>
@@ -685,7 +686,7 @@ class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
                           ],
                         ),
                       );
-                    }).toList(),
+                    }),
                 ],
               ),
               Positioned(

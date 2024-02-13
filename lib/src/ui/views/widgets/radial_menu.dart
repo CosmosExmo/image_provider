@@ -1,4 +1,4 @@
-part of image_provider;
+part of '../../../../image_provider.dart';
 
 class RadialMenu extends StatefulWidget {
   final List<RadialMenuEntry> entries;
@@ -7,12 +7,12 @@ class RadialMenu extends StatefulWidget {
   final IconData icon;
 
   const RadialMenu({
-    Key? key,
+    super.key,
     required this.entries,
     this.size = 160,
     this.entrySize = 85,
     this.icon = Icons.menu,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() => _RadialMenuState();
@@ -85,7 +85,6 @@ class _RadialMenuState extends State<RadialMenu> {
                   ),
                 )
                 .values
-                .toList()
         ],
       ),
     );

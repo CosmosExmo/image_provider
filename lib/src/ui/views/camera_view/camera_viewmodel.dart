@@ -273,6 +273,10 @@ class CameraViewModel with ChangeNotifier {
   }
 
   Future<void> resumeCamera() async {
+    if (_controller == null || !(_controller?.value.isInitialized ?? false)) {
+      await _initCamera();
+    }
+  
     await _controller?.resumePreview();
   }
 }
