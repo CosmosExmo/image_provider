@@ -1,20 +1,15 @@
 part of '../../image_provider.dart';
 
 class CameraViewOptions {
-  CameraViewOptions(
-      {this.cameraItems = const [],
-      this.cameraItemsMap = const {},
-      this.cardColor = Colors.red,
-      this.textColor = Colors.white,
-      this.iconColor = Colors.white,
-      this.galleryPhotoTitleTextStyle}) {
-    cameraItemsMap = {
-      for (final item in cameraItems) cameraItems.indexOf(item): item,
-    };
-  }
+  const CameraViewOptions({
+    this.imageMetadataList = const [],
+    this.cardColor = Colors.red,
+    this.textColor = Colors.white,
+    this.iconColor = Colors.white,
+    this.galleryPhotoTitleTextStyle,
+  });
 
-  Map<int, CameraItemMetadata> cameraItemsMap;
-  final List<CameraItemMetadata> cameraItems;
+  final List<ImageMetadata> imageMetadataList;
   final Color cardColor, textColor, iconColor;
   final TextStyle? galleryPhotoTitleTextStyle;
 }

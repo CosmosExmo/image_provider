@@ -1,30 +1,21 @@
 part of '../../image_provider.dart';
 
-class CameraItemMetadata {
+class ImageMetadata {
   final String? title;
-  final ContentData? contentData;
+  final OverlayContent? overlayContent;
 
-    CameraItemMetadata({
-    this.title,
-    this.contentData
-  });
+  ImageMetadata({this.title, this.overlayContent});
 
-
-  
-  CameraItemMetadata copyWith({
-    String? title,
-    ContentData? contentData    
-  }) {
-    return CameraItemMetadata(
-          title: title ?? this.title,
-          contentData: contentData ?? this.contentData
-    );
+  ImageMetadata setEmpty() {
+    return ImageMetadata(title: title);
   }
+}
 
-  CameraItemMetadata setEmpty() {
-    return CameraItemMetadata(
-          title: title,
-          contentData: null
-    );
-  }
+enum OverlayContentSource { network, file }
+
+class OverlayContent {
+  final String path;
+  final OverlayContentSource source;
+
+  OverlayContent({required this.path, required this.source});
 }

@@ -1,15 +1,15 @@
 part of '../../../../image_provider.dart';
 
 class CameraView extends StatelessWidget {
-  const CameraView(
-    this._options, {
+  const CameraView({
+    this.options = const CameraViewOptions(),
     super.key,
   });
-  final CameraViewOptions? _options;
+  final CameraViewOptions options;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CameraViewModel(_options),
+      create: (_) => CameraViewModel(options),
       builder: (context, child) {
         return const Scaffold(
           body: _PageLoadingWidget(),
@@ -163,123 +163,131 @@ class _PortraitContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const Positioned.fill(child: _CameraWidget(turns: 0)),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            color: Colors.black38,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Selector<CameraViewModel, String?>(
-                      shouldRebuild: (a, b) => a != b,
-                      selector: (_, model) => model.lastImage,
-                      builder: (context, value, child) {
-                        if (value != null) {
-                          final file = File(value);
-                          return CircleAvatar(
-                            radius: 25.0,
-                            backgroundImage:
-                                MemoryImage(file.readAsBytesSync()),
-                          );
-                        }
-                        return const CircleAvatar(radius: 25.0);
-                      },
-                    ),
-                    const _SpacingWidget(),
-                    InkWell(
-                      onTap: context.read<CameraViewModel>().captureImage,
-                      child: const Icon(Icons.camera, size: 60),
-                    ),
-                    const _SpacingWidget(),
-                    InkWell(
-                      onTap: () =>
-                          context.read<CameraViewModel>().returnData(context),
-                      child: const Icon(Icons.check, size: 50),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) {
+            return const Positioned.fill(child: _CameraWidget(turns: 0));
+          },
         ),
-        if (!context.watch<CameraViewModel>().showPhotosButton)
-          Positioned(
-            bottom: 0,
-            right: 0,
-            top: 0,
-            child: SafeArea(
-              child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 20, bottom: 25, right: 5, left: 10),
-                  child: _RollingGalleryShowCase(
-                      photoCheckerMap:
-                          context.watch<CameraViewModel>().photoCheckerMap)),
-            ),
-          ),
-        const Positioned(
-          top: 0,
-          left: 0,
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: _FlashToggleButton(),
-            ),
-          ),
-        ),
-        if (context.watch<CameraViewModel>().hasTitle())
-          Positioned(
-            top: 0,
-            right: 0,
-            left: 0,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Card(
-                    color: context.read<CameraViewModel>().cardColor ??
-                        Theme.of(context).cardColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        (context
-                            .watch<CameraViewModel>()
-                            .currentItem!
-                            .value
-                            .title!),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            color: context.read<CameraViewModel>().textColor),
-                      ),
+        OverlayEntry(
+          builder: (context) {
+            return Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                color: Colors.black38,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const _CameraRollWidget(),
+                        const _SpacingWidget(),
+                        InkWell(
+                          onTap: context.read<CameraViewModel>().captureImage,
+                          child: const Icon(Icons.camera, size: 60),
+                        ),
+                        const _SpacingWidget(),
+                        InkWell(
+                          onTap: () => context
+                              .read<CameraViewModel>()
+                              .returnData(context),
+                          child: const Icon(Icons.check, size: 50),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-        Positioned(
-          top: 0,
-          right: 0,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                context.read<CameraViewModel>().getCurrentVersion,
-                style: const TextStyle(color: Colors.white),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return const Positioned(
+              top: 0,
+              left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: _FlashToggleButton(),
+                ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return Selector<CameraViewModel, ImageMetadata?>(
+              selector: (_, model) => model.capturingImageMetaData,
+              builder: (context, capturingImageMetaData, _) {
+                return Visibility(
+                  visible: capturingImageMetaData != null &&
+                      capturingImageMetaData.title != null &&
+                      capturingImageMetaData.title!.isNotEmpty,
+                  child: Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Card(
+                            color: context.read<CameraViewModel>().cardColor ??
+                                Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                (capturingImageMetaData?.title ?? ""),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                        color: context
+                                            .read<CameraViewModel>()
+                                            .textColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return Positioned(
+              top: 0,
+              right: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    context.read<CameraViewModel>().getCurrentVersion,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return const _ImageOverlayContentWidget();
+          },
         ),
       ],
     );
@@ -291,81 +299,135 @@ class _LandscapeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const Positioned.fill(child: _CameraWidget(turns: 1)),
-        Positioned(
-          top: 0,
-          bottom: 0,
-          right: 0,
-          child: Container(
-            color: Colors.black38,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Selector<CameraViewModel, String?>(
-                      shouldRebuild: (a, b) => a != b,
-                      selector: (_, model) => model.lastImage,
-                      builder: (context, value, child) {
-                        if (value != null) {
-                          final file = File(value);
-                          return CircleAvatar(
-                            radius: 25.0,
-                            backgroundImage:
-                                MemoryImage(file.readAsBytesSync()),
-                          );
-                        }
-                        return const CircleAvatar(radius: 25.0);
-                      },
-                    ),
-                    const _SpacingWidget(),
-                    InkWell(
-                      onTap: context.read<CameraViewModel>().captureImage,
-                      child: const Icon(Icons.camera, size: 70),
-                    ),
-                    const _SpacingWidget(),
-                    InkWell(
-                      onTap: () =>
-                          context.read<CameraViewModel>().returnData(context),
-                      child: const Icon(Icons.check, size: 50),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return Overlay(
+      initialEntries: [
+        OverlayEntry(
+          builder: (context) {
+            return const Positioned.fill(child: _CameraWidget(turns: 1));
+          },
         ),
-        const Positioned(
-          top: 0,
-          bottom: 0,
-          left: 0,
-          child: SafeArea(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: _FlashToggleButton(),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+        OverlayEntry(
+          builder: (context) {
+            return Positioned(
+              top: 0,
+              bottom: 0,
+              right: 0,
               child: Container(
-                color: Colors.black.withOpacity(0.5),
-                child: Text(
-                  context.read<CameraViewModel>().getCurrentVersion,
-                  style: const TextStyle(color: Colors.white),
+                color: Colors.black38,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        const _CameraRollWidget(),
+                        const _SpacingWidget(),
+                        InkWell(
+                          onTap: context.read<CameraViewModel>().captureImage,
+                          child: const Icon(Icons.camera, size: 70),
+                        ),
+                        const _SpacingWidget(),
+                        InkWell(
+                          onTap: () => context
+                              .read<CameraViewModel>()
+                              .returnData(context),
+                          child: const Icon(Icons.check, size: 50),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return const Positioned(
+              top: 0,
+              bottom: 0,
+              left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: _FlashToggleButton(),
+                ),
+              ),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return Selector<CameraViewModel, ImageMetadata?>(
+              selector: (_, model) => model.capturingImageMetaData,
+              builder: (context, capturingImageMetaData, _) {
+                return Visibility(
+                  visible: capturingImageMetaData != null &&
+                      capturingImageMetaData.title != null &&
+                      capturingImageMetaData.title!.isNotEmpty,
+                  child: Positioned(
+                    top: 0,
+                    right: 0,
+                    left: 0,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Card(
+                            color: context.read<CameraViewModel>().cardColor ??
+                                Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                (capturingImageMetaData?.title ?? ""),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                        color: context
+                                            .read<CameraViewModel>()
+                                            .textColor),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return Positioned(
+              bottom: 0,
+              left: 0,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Text(
+                      context.read<CameraViewModel>().getCurrentVersion,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+        OverlayEntry(
+          builder: (context) {
+            return const _ImageOverlayContentWidget();
+          },
         ),
       ],
     );
@@ -524,196 +586,166 @@ class _SpacingWidget extends StatelessWidget {
   }
 }
 
-class _RollingGalleryShowCase extends StatefulWidget {
-  final Map<int, CameraItemMetadata> photoCheckerMap;
-  final IconData? suffixIcon;
-  final Icon? prefixIcon;
-  final int animationDurationInMilli;
-  
-  const _RollingGalleryShowCase({
-    // ignore: unused_element
-    this.suffixIcon = Icons.photo_library_sharp,
-    // ignore: unused_element
-    this.prefixIcon,
-    // ignore: unused_element
-    this.animationDurationInMilli = 375,
-    required this.photoCheckerMap,
-  });
-  @override
-  // ignore: library_private_types_in_public_api
-  _RollingGalleryShowCaseBarState createState() =>
-      _RollingGalleryShowCaseBarState();
-}
-
-class _RollingGalleryShowCaseBarState extends State<_RollingGalleryShowCase>
-    with SingleTickerProviderStateMixin {
-  @override
-  void initState() {
-    super.initState();
-    context.read<CameraViewModel>().setAnimationController(AnimationController(
-          vsync: this,
-          duration: Duration(milliseconds: widget.animationDurationInMilli),
-        ));
-  }
+class _CameraRollWidget extends StatelessWidget {
+  const _CameraRollWidget();
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      fit: StackFit.loose,
-      alignment: Alignment.centerRight,
-      children: [
-        context.watch<CameraViewModel>().toggle == 1
-            ? const SizedBox.shrink()
-            : Material(
-                color: context.read<CameraViewModel>().cardColor ??
-                    Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(30.0),
-                child: IconButton(
-                  splashRadius: 19.0,
-                  iconSize: 60,
-                  color: Colors.transparent.withOpacity(0),
-                  icon: widget.prefixIcon != null
-                      ? context.watch<CameraViewModel>().toggle == 1
-                          ? Icon(
-                              Icons.arrow_back_ios,
-                              color:
-                                  context.read<CameraViewModel>().iconColor ??
-                                      Colors.white,
-                            )
-                          : widget.prefixIcon!
-                      : Icon(
-                          context.watch<CameraViewModel>().toggle == 1
-                              ? Icons.arrow_back_ios
-                              : widget.suffixIcon,
-                          color: context.read<CameraViewModel>().iconColor ??
-                              Colors.white,
-                          size: 35.0,
-                        ),
-                  onPressed: () {
-                    if (context.read<CameraViewModel>().toggle == 0) {
-                      context.read<CameraViewModel>().setToggle(1);
-                      context
-                          .read<CameraViewModel>()
-                          .animationController
-                          .forward();
-                      return;
-                    }
+    return GestureDetector(
+      onTap: () =>
+          context.read<CameraViewModel>().openCameraRollBottomSheet(context),
+      child: Selector<CameraViewModel, String?>(
+        shouldRebuild: (a, b) => a != b,
+        selector: (_, model) => model.lastImage,
+        builder: (context, value, child) {
+          if (value != null) {
+            final file = File(value);
+            return InkWell(
+              child: CircleAvatar(
+                radius: 25.0,
+                backgroundImage: MemoryImage(file.readAsBytesSync()),
+              ),
+            );
+          }
+          return const CircleAvatar(radius: 25.0);
+        },
+      ),
+    );
+  }
+}
 
-                    context.read<CameraViewModel>().setToggle(0);
-                    context
-                        .read<CameraViewModel>()
-                        .animationController
-                        .reverse();
-                  },
+class CameraRollContentWidget extends StatelessWidget {
+  final CameraViewModel provider;
+  const CameraRollContentWidget(this.provider, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider.value(
+      value: provider,
+      child: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Selector<CameraViewModel, List<ContentData>>(
+            selector: (_, model) => model.contentDataList,
+            builder: (context, contentDataList, _) {
+              final maxWidth = MediaQuery.of(context).size.width;
+              const cSize = 150;
+              final cCount = (maxWidth ~/ cSize).toInt();
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: cCount,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
                 ),
-              ),
-        AnimatedContainer(
-          duration: Duration(milliseconds: widget.animationDurationInMilli),
-          height: (context.watch<CameraViewModel>().toggle == 0)
-              ? 0
-              : MediaQuery.of(context).size.height * 0.4,
-          width: (context.watch<CameraViewModel>().toggle == 0)
-              ? 0
-              : MediaQuery.of(context).size.width * 0.6,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0),
-            color: Colors.grey.shade800.withOpacity(0.8),
-          ),
-          child: Stack(
-            fit: StackFit.loose,
-            children: [
-              GridView.count(
-                crossAxisCount: 2,
-                padding: const EdgeInsets.all(20),
-                children: [
-                  if (context.watch<CameraViewModel>().toggle == 1)
-                    ...widget.photoCheckerMap.entries.map((item) {
-                      if (item.value.contentData == null) return Container();
-                      final data = item.value.contentData;
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 6.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Stack(
-                              fit: StackFit.loose,
-                              children: [
-                                Builder(builder: (context) {
-                                  // ignore: prefer_typing_uninitialized_variables
-                                  late final image;
-                                  if (data?.path != null) {
-                                    final file = File(data!.path!);
-                                    image = MemoryImage(file.readAsBytesSync());
-                                  } else {
-                                    image = const AssetImage(
-                                        'image_provider_assets/imgs/placeholder.jpg',
-                                        package: 'image_provider');
-                                  }
-                                  return ImageHolder(
-                                      images: [DecorationImage(image: image)],
-                                      child: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .aspectRatio *
-                                              175,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .aspectRatio *
-                                              175,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              image: DecorationImage(
-                                                  image: image,
-                                                  fit: BoxFit.fill))));
-                                }),
-                                Positioned(
-                                  right: -2,
-                                  top: -2,
-                                  child: GestureDetector(
-                                      onTap: () => context
-                                          .read<CameraViewModel>()
-                                          .removeImageByIndex(item.key),
-                                      child: const Icon(Icons.cancel,
-                                          color: Colors.red, size: 18)),
+                itemCount: contentDataList.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == contentDataList.length) {
+                    return const SizedBox();
+                  }
+
+                  final item = contentDataList[index];
+                  return SizedBox(
+                    child: Stack(
+                      fit: StackFit.loose,
+                      children: [
+                        Builder(
+                          builder: (context) {
+                            late final dynamic image;
+                            final file = File(item.path);
+                            image = MemoryImage(file.readAsBytesSync());
+                            return ImageHolder(
+                              images: [DecorationImage(image: image)],
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  image: DecorationImage(
+                                    image: image,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ],
-                            ),
-                            Text(item.value.title!,
-                                style: context
-                                    .read<CameraViewModel>()
-                                    .galleryPhotoTitleTextStyle),
-                          ],
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    }),
-                ],
-              ),
-              Positioned(
-                top: -6,
-                left: -6,
-                child: IconButton(
-                    onPressed: () {
-                      if (context.read<CameraViewModel>().toggle == 0) {
-                        context.read<CameraViewModel>().setToggle(1);
-                        context
-                            .read<CameraViewModel>()
-                            .animationController
-                            .forward();
-                        return;
-                      }
-                      context.read<CameraViewModel>().setToggle(0);
-                      context
-                          .read<CameraViewModel>()
-                          .animationController
-                          .reverse();
-                    },
-                    icon: const Icon(Icons.cancel)),
-              )
-            ],
+                        Positioned(
+                          right: 2,
+                          top: 2,
+                          child: GestureDetector(
+                            onTap: () => context
+                                .read<CameraViewModel>()
+                                .removeImageByIndex(index),
+                            child: const Icon(
+                              Icons.cancel,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                        if (item.metadata != null &&
+                            (item.metadata!.title?.isNotEmpty ?? false))
+                          Positioned(
+                            left: 1,
+                            right: 1,
+                            bottom: 0,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white38,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(12),
+                                  bottomRight: Radius.circular(12),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Text(
+                                    item.metadata?.title ?? "",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge
+                                        ?.copyWith(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ),
-      ],
+      ),
+    );
+  }
+}
+
+class _ImageOverlayContentWidget extends StatelessWidget {
+  const _ImageOverlayContentWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<CameraViewModel, ImageMetadata?>(
+      selector: (_, model) => model.capturingImageMetaData,
+      builder: (context, capturingImageMetaData, _) {
+        if (capturingImageMetaData == null ||
+            capturingImageMetaData.overlayContent == null) {
+          return const SizedBox.shrink();
+        }
+        return IgnorePointer(
+          child: Center(
+            child: Image.network(
+              capturingImageMetaData.overlayContent!.path,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        );
+      },
     );
   }
 }
