@@ -34,9 +34,9 @@ dependencies:
   focused_image_widget:
     git:
       url: https://github.com/CosmosExmo/focused_image_widget.git
-
   dialog_service:
-    path: /Users/emircanurfa/dev/flutter_packages/dialog_service
+    git:
+      url: https://github.com/trailon/dialog_service.git
 
 dev_dependencies:
   flutter_test:

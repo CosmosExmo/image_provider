@@ -739,10 +739,16 @@ class _ImageOverlayContentWidget extends StatelessWidget {
         }
         return IgnorePointer(
           child: Center(
-            child: Image.network(
-              capturingImageMetaData.overlayContent!.path,
-              fit: BoxFit.fitWidth,
-            ),
+            child: capturingImageMetaData.overlayContent!.source ==
+                    OverlayContentSource.network
+                ? Image.network(
+                    capturingImageMetaData.overlayContent!.content,
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.file(
+                    capturingImageMetaData.overlayContent!.content,
+                    fit: BoxFit.fitWidth,
+                  ),
           ),
         );
       },

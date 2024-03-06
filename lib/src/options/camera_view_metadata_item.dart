@@ -14,8 +14,13 @@ class ImageMetadata {
 enum OverlayContentSource { network, file }
 
 class OverlayContent {
-  final String path;
+  //Either a network url or a File
+  final dynamic content;
   final OverlayContentSource source;
 
-  OverlayContent({required this.path, required this.source});
+  //Make sure the content is String or File
+  OverlayContent({required this.content, required this.source})
+      : assert(source == OverlayContentSource.network
+            ? content is String
+            : content is File);
 }
