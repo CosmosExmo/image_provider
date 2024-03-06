@@ -4,12 +4,16 @@ class ImageProvider {
   final BuildContext _context;
   final RepositoryTypeSelectionWidget? widget;
   final RepositoryType? repositoryType;
-  final CameraViewOptions? options;
+  final CameraViewOptions options;
   final ColorScheme? colorScheme;
 
-  ImageProvider(this._context,
-      {this.widget, this.options, this.repositoryType, this.colorScheme})
-      : assert(widget != null || repositoryType != null,
+  ImageProvider(
+    this._context, {
+    this.widget,
+    this.options = const CameraViewOptions(),
+    this.repositoryType,
+    this.colorScheme,
+  }) : assert(widget != null || repositoryType != null,
             'No repository type selected or widget provided');
   ImageExport? _imageExport;
 
@@ -56,7 +60,7 @@ class ImageProvider {
     final images = await Navigator.push<ImageExport>(
       _context,
       MaterialPageRoute(
-        builder: (_) => CameraView(options),
+        builder: (_) => CameraView(options: options),
       ),
     );
 
@@ -169,7 +173,8 @@ class ImageProvider {
               imageData: resultList.elementAt(index)));
       final compressedList = await getImageCompressedList(paramList);
       for (var compressedImg in compressedList) {
-        final content = ContentData.fromData("jpg", compressedImg);
+        final content =
+            ContentData(extension: "jpg", data: compressedImg, path: "");
         imageExport.imgadder = content;
       }
       _imageExport = imageExport;
@@ -188,7 +193,8 @@ class ImageProvider {
             imageData: assetimgs.elementAt(index)));
     final compressedList = await getImageCompressedList(paramList);
     for (var compressedImg in compressedList) {
-      final content = ContentData.fromData("jpg", compressedImg);
+      final content =
+          ContentData(extension: "jpg", data: compressedImg, path: "");
       contentImages.add(content);
     }
     return contentImages;
@@ -211,10 +217,11 @@ class ImageProvider {
 
       await Future.wait<void>(List.from(
         images.files.map<Future<void>>((item) async {
-          final content = ContentData.fromData(
-            item.extension,
-            item.bytes,
+          final content = ContentData(
+            extension: item.extension ?? "jpg",
+            data: item.bytes,
             fileName: item.name,
+            path: item.path ?? "",
           );
           imageExport.imgadder = content;
         }),
@@ -222,7 +229,6 @@ class ImageProvider {
 
       _imageExport = imageExport;
     } catch (_) {
-
       return;
     }
   }

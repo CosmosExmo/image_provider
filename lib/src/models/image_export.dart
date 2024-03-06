@@ -17,6 +17,8 @@ class ImageExport {
     _images!.add(value);
   }
 
+  List<ContentData?> get allImages => _images ?? <ContentData>[];
+
   List<ContentData?> get images =>
       (_images ?? <ContentData>[]).where((img) => img != null).toList();
 
@@ -55,36 +57,33 @@ class ImageExport {
 
 class ContentData {
   final String extension;
-  final String? path;
+  final String path;
   final String? fileName;
-  bool dummy;
+  final ImageMetadata? metadata;
   Uint8List? data;
 
   ContentData({
     required this.extension,
     required this.path,
     this.fileName,
-    this.dummy = false,
+    this.metadata,
     this.data,
   });
 
-  factory ContentData.dummy() {
+  ContentData copyWith({
+    String? extension,
+    String? path,
+    String? fileName,
+    ImageMetadata? metadata,
+    Uint8List? data,
+  }) {
     return ContentData(
-      path: null,
-      dummy: true,
-      extension: "jpg",
-      fileName: "",
-      data: Uint8List(0),
+      extension: extension ?? this.extension,
+      path: path ?? this.path,
+      fileName: fileName ?? this.fileName,
+      metadata: metadata ?? this.metadata,
+      data: data ?? this.data,
     );
   }
-
-  factory ContentData.fromData(String? extension, Uint8List? data,
-      {String? fileName, String? path}) {
-    return ContentData(
-      path: path ?? "",
-      extension: extension ?? "jpg",
-      fileName: fileName,
-      data: data,
-    );
-  }
+  
 }

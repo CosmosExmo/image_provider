@@ -9,65 +9,34 @@ import 'package:image_provider/image_provider.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:image_provider/src/utils/get_package_info.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class CameraViewModel with ChangeNotifier {
-  CameraViewModel(this._options) {
-    _options ??= CameraViewOptions(
-        cameraItems:
-            List.generate(50, (index) => CameraItemMetadata()).toList());
+  CameraViewModel(CameraViewOptions options) {
+    _options = options;
   }
 
-  CameraViewOptions? _options;
+  late CameraViewOptions _options;
 
-  Color? get cardColor => _options?.cardColor;
-
-  Color? get textColor => _options?.textColor;
-
-  Color? get iconColor => _options?.iconColor;
-
+  Color? get cardColor => _options.cardColor;
+  Color? get textColor => _options.textColor;
+  Color? get iconColor => _options.iconColor;
   TextStyle? get galleryPhotoTitleTextStyle =>
-      _options?.galleryPhotoTitleTextStyle;
+      _options.galleryPhotoTitleTextStyle;
+
   static List<CameraDescription> _availableCameras = [];
 
   CameraController? _controller;
-
   ImageExport? _imageExport;
 
-  Map<int, CameraItemMetadata> get photoCheckerMap => _options!.cameraItemsMap;
-
-  List<CameraItemMetadata> get cameraItemsList => _options!.cameraItems;
-
-  bool get showPhotosButton =>
-      cameraItemsList.every((element) => element.title == null);
-
-  FlashMode? _flashType;
-
   late AnimationController _animationController;
-
   AnimationController get animationController => _animationController;
-
-  int _toggle = 0;
-
-  int get toggle => _toggle;
-
-  void setToggle(int value) {
-    _toggle = value;
-    notifyListeners();
-  }
 
   setAnimationController(AnimationController value) {
     _animationController = value;
   }
 
   String? _lastImage;
-
-  MapEntry<int, CameraItemMetadata>? get currentItem {
-    if (photoCheckerMap.values.every((v) => v.contentData != null)) {
-      return null;
-    }
-    return photoCheckerMap.entries
-        .firstWhere((element) => element.value.contentData == null);
-  }
 
   bool _viewDidLoad = false;
   bool get viewDidLoad => _viewDidLoad;
@@ -77,12 +46,15 @@ class CameraViewModel with ChangeNotifier {
   PermissionStatus? _cameraPermissionStatus;
 
   CameraController? get controller => _controller;
-  FlashMode? get flashType => _flashType;
+
   String? get lastImage => _lastImage;
   PermissionStatus get cameraPermissionStatus =>
       _cameraPermissionStatus ?? PermissionStatus.denied;
 
   String get getCurrentVersion => PackageInfoHolder().packageVersion;
+
+  FlashMode? _flashType;
+  FlashMode? get flashType => _flashType;
 
   double _baseScale = 1.0;
   int _pointers = 0;
@@ -92,9 +64,16 @@ class CameraViewModel with ChangeNotifier {
   late double? _minZoomLevel;
 
   Future<void> removeImageByIndex(int index) async {
-    photoCheckerMap[index] = photoCheckerMap[index]!.setEmpty();
+    _imageExport?.allImages.removeAt(index);
     notifyListeners();
   }
+
+  List<ContentData> get contentDataList =>
+      _imageExport?.images
+          .where((element) => element != null)
+          .map((e) => e!)
+          .toList() ??
+      <ContentData>[];
 
   Future<void> getData() async {
     await Future.delayed(const Duration(milliseconds: 200));
@@ -105,13 +84,6 @@ class CameraViewModel with ChangeNotifier {
     await _initCamera();
     _viewDidLoad = true;
     notifyListeners();
-  }
-
-  bool hasTitle() {
-    if (currentItem?.value.title == null) {
-      return false;
-    }
-    return true;
   }
 
   Future<void> _initCamera() async {
@@ -159,22 +131,61 @@ class CameraViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get hasUnCapturedImageMetaDataLeft {
+    if (_options.imageMetadataList.isEmpty) {
+      return false;
+    }
+
+    return capturingImageMetaData == null ||
+        capturingImageMetaData?.title == null;
+  }
+
+  //Get first image metadata that isnt captured yet.
+  ImageMetadata? get capturingImageMetaData {
+    return _options.imageMetadataList.firstWhere(
+      (element) {
+        if (_imageExport == null) {
+          return true;
+        }
+
+        if (_imageExport?.allImages.isEmpty ?? true) {
+          return true;
+        }
+
+        return !_imageExport!.allImages
+            .where((imageContent) => element == imageContent?.metadata)
+            .isNotEmpty;
+      },
+      orElse: () => ImageMetadata(),
+    );
+  }
+
   Future<void> captureImage() async {
     try {
-      if (currentItem == null) {
+      if (_controller?.value.isInitialized != true) {
         return;
       }
+
+      if (hasUnCapturedImageMetaDataLeft) {
+        return;
+      }
+
       await HapticFeedback.mediumImpact();
       setShowPictureTakenWidget(true);
       final imageFile = await _controller?.takePicture();
       _lastImage = imageFile?.path;
       final params = ImageCompressParams(
-          repositoryType: RepositoryType.camera, imageData: imageFile?.path);
+        repositoryType: RepositoryType.camera,
+        imageData: imageFile?.path,
+      );
       final value = await getImageCompressed(params);
-      final content = ContentData.fromData("jpg", value, path: imageFile!.path);
+      final content = ContentData(
+        extension: "jpg",
+        path: imageFile!.path,
+        data: value,
+        metadata: capturingImageMetaData,
+      );
       _imageExport?.imgadder = content;
-      photoCheckerMap[currentItem!.key] =
-          currentItem!.value.copyWith(contentData: content);
       setShowPictureTakenWidget(false);
     } catch (_) {
       setShowPictureTakenWidget(false);
@@ -254,10 +265,6 @@ class CameraViewModel with ChangeNotifier {
 
   void returnData(BuildContext context) async {
     await disposeCamera();
-    if (photoCheckerMap.values.isNotEmpty) {
-      _imageExport?.imgssetter =
-          photoCheckerMap.values.map((e) => e.contentData).toList();
-    }
     Navigator.pop(context, _imageExport);
   }
 
@@ -276,7 +283,18 @@ class CameraViewModel with ChangeNotifier {
     if (_controller == null || !(_controller?.value.isInitialized ?? false)) {
       await _initCamera();
     }
-  
+
     await _controller?.resumePreview();
+  }
+
+  Future<void> openCameraRollBottomSheet(BuildContext context) async {
+    await showBarModalBottomSheet(
+      context: context,
+      isDismissible: false,
+      expand: false,
+      barrierColor: Colors.transparent,
+      builder: (_) => CameraRollContentWidget(this),
+    );
+    notifyListeners();
   }
 }

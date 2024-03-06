@@ -20,6 +20,12 @@ dependencies:
     git:
       url: https://github.com/trailon/multi_image_picker_plus.git
 
+  modal_bottom_sheet:
+    git:
+      url: https://github.com/jamesblasco/modal_bottom_sheet.git
+      ref: 38c6f44d0c4205608618a676a907c2d104d00b52
+      path: modal_bottom_sheet
+
   #Web
   file_picker: ^6.0.0
   permission_manager:
@@ -28,7 +34,6 @@ dependencies:
   focused_image_widget:
     git:
       url: https://github.com/CosmosExmo/focused_image_widget.git
-
   dialog_service:
     git:
       url: https://github.com/trailon/dialog_service.git
