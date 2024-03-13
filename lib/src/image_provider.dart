@@ -215,20 +215,20 @@ class ImageProvider {
 
       final imageExport = ImageExport.files();
 
-      await Future.wait<void>(List.from(
-        images.files.map<Future<void>>((item) async {
-          final content = ContentData(
-            extension: item.extension ?? "jpg",
-            data: item.bytes,
-            fileName: item.name,
-            path: item.path ?? "",
-          );
-          imageExport.imgadder = content;
-        }),
-      ));
+      for (var item in images.files) {
+        final content = ContentData(
+          extension: item.extension ?? "jpg",
+          data: item.bytes,
+          fileName: item.name,
+          path: "",
+        );
+        imageExport.imgadder = content;
+      }
 
       _imageExport = imageExport;
-    } catch (_) {
+    } catch (e, str) {
+      debugPrint("ERROR $e");
+      debugPrint("STACKTRACE $str");
       return;
     }
   }
