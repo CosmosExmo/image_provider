@@ -1,6 +1,6 @@
 name: image_provider
-description: A new Flutter package project.
-version: 0.8.4
+description: Image provider package with support camera, gallery and file picker.
+version: 0.9.0
 
 publish_to: none
 
@@ -12,22 +12,16 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.5
-  camera: ^0.10.5+9
+  camera: ^0.11.0+1
   native_device_orientation: ^2.0.3
   flutter_image_compress: ^2.1.0
   path_provider: ^2.0.11
-  multi_image_picker_plus:
-    git:
-      url: https://github.com/trailon/multi_image_picker_plus.git
+  image_picker: ^1.1.2
 
-  modal_bottom_sheet:
-    git:
-      url: https://github.com/jamesblasco/modal_bottom_sheet.git
-      ref: 38c6f44d0c4205608618a676a907c2d104d00b52
-      path: modal_bottom_sheet
+  wolt_modal_sheet: ^0.9.3
 
   #Web
-  file_picker: ^6.0.0
+  file_picker: ^8.0.6
   permission_manager:
     git:
       url: "https://github.com/trailon/permission_manager.git"
@@ -41,7 +35,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.1
+  flutter_lints: ^4.0.0
 flutter:
   uses-material-design: true
 
