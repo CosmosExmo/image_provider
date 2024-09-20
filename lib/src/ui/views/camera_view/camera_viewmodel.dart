@@ -9,7 +9,7 @@ import 'package:image_provider/image_provider.dart';
 import 'package:image_provider/src/services/permission_services.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:image_provider/src/utils/get_package_info.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class CameraViewModel with ChangeNotifier {
   CameraViewModel(CameraViewOptions options) {
@@ -288,12 +288,16 @@ class CameraViewModel with ChangeNotifier {
   }
 
   Future<void> openCameraRollBottomSheet(BuildContext context) async {
-    await showBarModalBottomSheet(
+    await WoltModalSheet.show(
       context: context,
-      isDismissible: false,
-      expand: false,
-      barrierColor: Colors.transparent,
-      builder: (_) => CameraRollContentWidget(this),
+      pageListBuilder: (bottomSheetContext) => [
+        SliverWoltModalSheetPage(
+          pageTitle: const Text("Fotoğraflar"),
+          mainContentSliversBuilder: (context) => [
+            CameraRollContentWidget(this),
+          ],
+        )
+      ],
     );
     notifyListeners();
   }

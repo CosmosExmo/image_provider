@@ -73,94 +73,12 @@ class ImageProvider {
       await permissionPanager.requestMedia(photos: true);
       await permissionPanager.requestMediaLocation();
 
-      final ColorScheme colorSchemeTheme =
-          // ignore: use_build_context_synchronously
-          colorScheme ?? Theme.of(_context).colorScheme;
 
-      List<Asset> resultList = <Asset>[];
+      final ImagePicker picker = ImagePicker();
 
-      const AlbumSetting albumSetting = AlbumSetting(
-        fetchResults: {
-          PHFetchResult(
-            type: PHAssetCollectionType.smartAlbum,
-            subtype: PHAssetCollectionSubtype.smartAlbumUserLibrary,
-          ),
-          PHFetchResult(
-            type: PHAssetCollectionType.smartAlbum,
-            subtype: PHAssetCollectionSubtype.smartAlbumFavorites,
-          ),
-          PHFetchResult(
-            type: PHAssetCollectionType.album,
-            subtype: PHAssetCollectionSubtype.albumRegular,
-          ),
-          PHFetchResult(
-            type: PHAssetCollectionType.smartAlbum,
-            subtype: PHAssetCollectionSubtype.smartAlbumSelfPortraits,
-          ),
-          PHFetchResult(
-            type: PHAssetCollectionType.smartAlbum,
-            subtype: PHAssetCollectionSubtype.smartAlbumPanoramas,
-          ),
-          PHFetchResult(
-            type: PHAssetCollectionType.smartAlbum,
-            subtype: PHAssetCollectionSubtype.smartAlbumVideos,
-          ),
-        },
-      );
-      SelectionSetting selectionSetting = SelectionSetting(
-        min: 1,
-        max: maxImage,
-        unselectOnReachingMax: true,
-      );
-      const DismissSetting dismissSetting = DismissSetting(
-        enabled: true,
-        allowSwipe: true,
-      );
-      final ThemeSetting themeSetting = ThemeSetting(
-        backgroundColor: colorSchemeTheme.background,
-        selectionFillColor: colorSchemeTheme.primary,
-        selectionStrokeColor: colorSchemeTheme.onPrimary,
-        previewSubtitleAttributes: const TitleAttribute(fontSize: 12.0),
-        previewTitleAttributes: TitleAttribute(
-          foregroundColor: colorSchemeTheme.primary,
-        ),
-        albumTitleAttributes: TitleAttribute(
-          foregroundColor: colorSchemeTheme.primary,
-        ),
-      );
-      const ListSetting listSetting = ListSetting(
-        spacing: 5.0,
-        cellsPerRow: 4,
-      );
-      final CupertinoSettings iosSettings = CupertinoSettings(
-        fetch: const FetchSetting(album: albumSetting),
-        theme: themeSetting,
-        selection: selectionSetting,
-        dismiss: dismissSetting,
-        list: listSetting,
-      );
 
-      /// PICK MULTIPLE IMAGES FROM GALLERY
-      resultList = await MultiImagePicker.pickImages(
-        selectedAssets: resultList,
-        cupertinoOptions: CupertinoOptions(
-          doneButton: UIBarButtonItem(
-              title: 'Onayla', tintColor: colorSchemeTheme.primary),
-          cancelButton: UIBarButtonItem(
-              title: 'İptal', tintColor: colorSchemeTheme.primary),
-          albumButtonColor: colorSchemeTheme.primary,
-          settings: iosSettings,
-        ),
-        materialOptions: MaterialOptions(
-          actionBarColor: colorSchemeTheme.primary,
-          actionBarTitleColor: colorSchemeTheme.onPrimary,
-          statusBarColor: colorSchemeTheme.primary,
-          actionBarTitle: "Resim Seçin",
-          allViewTitle: "Tüm Resimler",
-          maxImages: maxImage,
-          useDetailsView: false,
-          selectCircleStrokeColor: colorSchemeTheme.primary,
-        ),
+      final List<XFile> resultList = await picker.pickMultiImage(
+        limit: maxImage,
       );
 
       final imageExport = ImageExport.gallery();
@@ -184,7 +102,7 @@ class ImageProvider {
   }
 
   static Future<List<ContentData>> getCompressedImageList(
-      {required List<Asset> assetimgs}) async {
+      {required List<XFile> assetimgs}) async {
     List<ContentData> contentImages = [];
     final paramList = List.generate(
         assetimgs.length,

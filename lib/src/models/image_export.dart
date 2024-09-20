@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 
-import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../image_provider.dart';
 
 class ImageExport {
   final RepositoryType? repositoryType;
   List<ContentData?>? _images;
-  List<Asset>? imageassets;
+  List<XFile>? imageassets;
 
   set imgssetter(List<ContentData?>? value) {
     _images = value;

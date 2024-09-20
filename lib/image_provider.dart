@@ -11,17 +11,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:focused_image_widget/focused_image_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:image_provider/src/models/image_export.dart';
 import 'package:image_provider/src/ui/views/camera_view/camera_viewmodel.dart';
 import 'package:image_provider/src/utils/compress_image.dart';
-import 'package:multi_image_picker_plus/multi_image_picker_plus.dart';
 import 'package:native_device_orientation/native_device_orientation.dart';
 import 'package:permission_manager/permission_manager.dart';
 import 'package:provider/provider.dart';
 
 export 'package:image_provider/src/models/image_export.dart';
-export 'package:multi_image_picker_plus/multi_image_picker_plus.dart'
-    show AssetThumb;
 export 'package:permission_manager/permission_manager.dart';
 
 part 'src/app/enums.dart';
