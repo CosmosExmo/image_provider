@@ -1,6 +1,6 @@
 name: image_provider
 description: Image provider package with support camera, gallery and file picker.
-version: 0.9.0
+version: 0.9.1
 
 publish_to: none
 
@@ -25,6 +25,7 @@ dependencies:
   permission_manager:
     git:
       url: "https://github.com/trailon/permission_manager.git"
+      ref: 0.0.1
   focused_image_widget:
     git:
       url: https://github.com/CosmosExmo/focused_image_widget.git
@@ -35,7 +36,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 flutter:
   uses-material-design: true
 
