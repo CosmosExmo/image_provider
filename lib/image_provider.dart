@@ -1,4 +1,4 @@
-library image_provider;
+library;
 
 import 'dart:async';
 import 'dart:io';
