@@ -1,6 +1,6 @@
 name: image_provider
 description: Image provider package with support camera, gallery and file picker.
-version: 0.9.2
+version: 0.9.3
 
 publish_to: none
 
@@ -18,10 +18,10 @@ dependencies:
   path_provider: ^2.1.5
   image_picker: ^1.1.2
 
-  wolt_modal_sheet: ^0.9.4
+  wolt_modal_sheet: ^0.10.0
 
   #Web
-  file_picker: 8.1.4
+  file_picker: ^8.1.6
   permission_manager:
     git:
       url: "https://github.com/trailon/permission_manager.git"
