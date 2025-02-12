@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of '../../image_provider.dart';
 
 class ImageMetadata {
@@ -8,6 +9,16 @@ class ImageMetadata {
 
   ImageMetadata setEmpty() {
     return ImageMetadata(title: title);
+  }
+
+  ImageMetadata copyWith({
+    String? title,
+    OverlayContent? overlayContent,
+  }) {
+    return ImageMetadata(
+      title: title ?? this.title,
+      overlayContent: overlayContent ?? this.overlayContent,
+    );
   }
 }
 
@@ -23,4 +34,14 @@ class OverlayContent {
       : assert(source == OverlayContentSource.network
             ? content is String
             : content is File);
+
+  @override
+  bool operator ==(covariant OverlayContent other) {
+    if (identical(this, other)) return true;
+
+    return other.content == content && other.source == source;
+  }
+
+  @override
+  int get hashCode => content.hashCode ^ source.hashCode;
 }

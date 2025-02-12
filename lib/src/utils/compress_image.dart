@@ -36,7 +36,8 @@ Future<List<Uint8List>> getImageCompressedList(
   return returnData;
 }
 
-Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
+Future<(Uint8List, String?)> getImageCompressed(
+    ImageCompressParams params) async {
   late Uint8List returnData;
 
   if (params.repositoryType == RepositoryType.camera) {
@@ -46,19 +47,19 @@ Future<Uint8List?> getImageCompressed(ImageCompressParams params) async {
   if (params.repositoryType == RepositoryType.gallery) {
     if (params.imageData is String) {
       returnData = File(params.imageData).readAsBytesSync();
-      return returnData;
+      return (returnData, params.imageData as String);
     }
     returnData = await getUInt8List(params.imageData);
   }
 
   if (params.repositoryType == RepositoryType.files) {
     returnData = params.imageData.bytes;
-    return returnData;
+    return (returnData, null);
   }
 
   final compressedImage = await compressList(returnData);
 
-  return compressedImage;
+  return (compressedImage, params.imageData as String);
 }
 
 Future<Uint8List> getUInt8List(XFile resimData) async {
@@ -66,7 +67,7 @@ Future<Uint8List> getUInt8List(XFile resimData) async {
   return byteData;
 }
 
-Future<Uint8List?> compressList(Uint8List list) async {
+Future<Uint8List> compressList(Uint8List list) async {
   try {
     var result = await FlutterImageCompress.compressWithList(
       list,
@@ -76,6 +77,6 @@ Future<Uint8List?> compressList(Uint8List list) async {
     );
     return result;
   } catch (_) {
-    return null;
+    rethrow;
   }
 }
