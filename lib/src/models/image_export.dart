@@ -1,5 +1,7 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../image_provider.dart';
@@ -17,7 +19,7 @@ class ImageExport {
     _images!.add(value);
   }
 
-  List<ContentData?> get allImages => _images ?? <ContentData>[];
+  List<ContentData?> get allImages => _images ?? [];
 
   List<ContentData?> get images =>
       (_images ?? <ContentData>[]).where((img) => img != null).toList();
@@ -85,5 +87,24 @@ class ContentData {
       data: data ?? this.data,
     );
   }
-  
+
+  @override
+  bool operator ==(covariant ContentData other) {
+    if (identical(this, other)) return true;
+
+    return other.extension == extension &&
+        other.path == path &&
+        other.fileName == fileName &&
+        other.metadata == metadata &&
+        other.data == data;
+  }
+
+  @override
+  int get hashCode {
+    return extension.hashCode ^
+        path.hashCode ^
+        fileName.hashCode ^
+        metadata.hashCode ^
+        data.hashCode;
+  }
 }
