@@ -1,6 +1,6 @@
 name: image_provider
 description: Image provider package with support camera, gallery and file picker.
-version: 0.10.1
+version: 0.10.2
 homepage: https://github.com/CosmosExmo/image_provider
 
 publish_to: none
