@@ -3,17 +3,17 @@ part of '../../../../image_provider.dart';
 class CameraView extends StatelessWidget {
   const CameraView({
     this.options = const CameraViewOptions(),
+    this.compressionOptions = const CompressionOptions(),
     super.key,
   });
   final CameraViewOptions options;
+  final CompressionOptions compressionOptions;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CameraViewModel(options),
+      create: (_) => CameraViewModel(options, compressionOptions),
       builder: (context, child) {
-        return const Scaffold(
-          body: _ViewWidgets(),
-        );
+        return const _ViewWidgets();
       },
     );
   }
@@ -31,6 +31,8 @@ class _ViewWidgets extends StatelessWidget {
             return Positioned.fill(
               child: CameraAwesomeBuilder.awesome(
                 saveConfig: SaveConfig.photo(),
+                previewAlignment: Alignment.center,
+                previewFit: CameraPreviewFit.cover,
                 onMediaCaptureEvent:
                     context.read<CameraViewModel>().onPictureCapture,
                 onMediaTap: (_) => context
@@ -49,11 +51,8 @@ class _ViewWidgets extends StatelessWidget {
                               AwesomeLocationButton(
                                 state: state,
                                 iconBuilder: (value) {
-                                  return Icon(
-                                    Icons.check,
-                                    color: context
-                                        .read<CameraViewModel>()
-                                        .iconColor,
+                                  return AwesomeCircleWidget.icon(
+                                    icon: Icons.check,
                                   );
                                 },
                                 onLocationTap: (_, __) => context
@@ -85,6 +84,80 @@ class _ViewWidgets extends StatelessWidget {
 class _ImageMetadataTitleWidget extends StatelessWidget {
   const _ImageMetadataTitleWidget();
 
+  (
+    double? top,
+    double? bottom,
+    double? left,
+    double? right,
+    Alignment alignment
+  ) setPositionAndAlignment({
+    required DeviceType deviceType,
+    required NativeDeviceOrientation orientation,
+  }) {
+    final bool isTablet = deviceType == DeviceType.tablet;
+    final adjustedOrientation = (isTablet && Platform.isAndroid)
+        ? _mapTabletOrientation(orientation)
+        : orientation;
+
+    double? top, bottom, left, right;
+    Alignment alignment;
+
+    switch (adjustedOrientation) {
+      case NativeDeviceOrientation.portraitUp:
+        top = 70;
+        bottom = null;
+        left = 0;
+        right = 0;
+        alignment = Alignment.topCenter;
+        break;
+      case NativeDeviceOrientation.portraitDown:
+        top = 140;
+        bottom = null;
+        left = 0;
+        right = 0;
+        alignment = Alignment.bottomCenter;
+        break;
+      case NativeDeviceOrientation.landscapeLeft:
+        top = 0;
+        bottom = 0;
+        left = null;
+        right = 5;
+        alignment = Alignment.centerLeft;
+        break;
+      case NativeDeviceOrientation.landscapeRight:
+        top = 0;
+        bottom = 0;
+        left = 5;
+        right = null;
+        alignment = Alignment.centerRight;
+        break;
+      default:
+        top = 70;
+        bottom = null;
+        left = 0;
+        right = 0;
+        alignment = Alignment.topCenter;
+    }
+
+    return (top, bottom, left, right, alignment);
+  }
+
+  NativeDeviceOrientation _mapTabletOrientation(
+      NativeDeviceOrientation orientation) {
+    switch (orientation) {
+      case NativeDeviceOrientation.portraitUp:
+        return NativeDeviceOrientation.landscapeLeft;
+      case NativeDeviceOrientation.portraitDown:
+        return NativeDeviceOrientation.landscapeRight;
+      case NativeDeviceOrientation.landscapeLeft:
+        return NativeDeviceOrientation.portraitDown;
+      case NativeDeviceOrientation.landscapeRight:
+        return NativeDeviceOrientation.portraitUp;
+      default:
+        return orientation;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return NativeDeviceOrientationReader(
@@ -96,43 +169,18 @@ class _ImageMetadataTitleWidget extends StatelessWidget {
         double? top, bottom, left, right;
         Alignment alignment = Alignment.topCenter;
 
-        switch (orientation) {
-          case NativeDeviceOrientation.portraitUp:
-            top = 70;
-            left = 0;
-            right = 0;
-            bottom = null;
-            alignment = Alignment.topCenter;
-            break;
-          case NativeDeviceOrientation.portraitDown:
-            bottom = null;
-            left = 0;
-            right = 0;
-            top = 140;
-            alignment = Alignment.bottomCenter;
-            break;
-          case NativeDeviceOrientation.landscapeLeft:
-            left = null;
-            top = 0;
-            bottom = 0;
-            right = 5;
-            alignment = Alignment.centerLeft;
-            break;
-          case NativeDeviceOrientation.landscapeRight:
-            right = null;
-            top = 0;
-            bottom = 0;
-            left = 5;
-            alignment = Alignment.centerRight;
-            break;
-          default:
-            top = 70;
-            left = 0;
-            right = 0;
-            bottom = null;
-            alignment = Alignment.topCenter;
-            break;
-        }
+        final deviceType = getDeviceType();
+
+        final values = setPositionAndAlignment(
+          deviceType: deviceType,
+          orientation: orientation,
+        );
+
+        top = values.$1;
+        bottom = values.$2;
+        left = values.$3;
+        right = values.$4;
+        alignment = values.$5;
 
         final capturingImageMetaData =
             context.watch<CameraViewModel>().capturingImageMetaData;

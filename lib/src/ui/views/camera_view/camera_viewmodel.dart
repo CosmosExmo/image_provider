@@ -6,17 +6,20 @@ import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_provider/image_provider.dart';
+import 'package:image_provider/src/helpers/compress_image_helper.dart';
 import 'package:image_provider/src/services/permission_services.dart';
-import 'package:image_provider/src/utils/compress_image.dart';
 import 'package:image_provider/src/utils/get_package_info.dart';
 import 'package:wolt_modal_sheet/wolt_modal_sheet.dart';
 
 class CameraViewModel with ChangeNotifier {
-  CameraViewModel(CameraViewOptions options) {
+  CameraViewModel(
+      CameraViewOptions options, CompressionOptions compressionOptions) {
     _options = options;
+    _compressionOptions = compressionOptions;
   }
 
   late CameraViewOptions _options;
+  late CompressionOptions _compressionOptions;
 
   Color? get cardColor => _options.cardColor;
   Color? get textColor => _options.textColor;
@@ -106,66 +109,76 @@ class CameraViewModel with ChangeNotifier {
         return;
       }
 
+      if (event.status == MediaCaptureStatus.failure) {
+        debugPrint("Failed to capture image: ${event.exception}");
+        return;
+      }
+
+      if (event.status == MediaCaptureStatus.capturing) {
+        debugPrint("Capturing image...");
+        return;
+      }
+
+      if (!event.isPicture) {
+        debugPrint("Not a picture capture event");
+        return;
+      }
+
       await HapticFeedback.mediumImpact();
 
-      if (event.status == MediaCaptureStatus.success && event.isPicture) {
-        List<ImageCompressParams> params = [];
+      List<ImageCompressParams> params = [];
+      event.captureRequest.when(
+        single: (single) {
+          if (single.file == null) {
+            return;
+          }
 
-        event.captureRequest.when(
-          single: (single) {
-            if (single.file == null) {
-              return;
-            }
+          final path = single.file!.path;
+          params.add(ImageCompressParams(
+            repositoryType: RepositoryType.camera,
+            imageData: path,
+          ));
+        },
+        multiple: (multiple) {
+          final nonNullList = multiple.fileBySensor.values
+              .where((element) => element != null)
+              .toList();
 
-            final path = single.file!.path;
-            params.add(ImageCompressParams(
+          if (nonNullList.isEmpty) {
+            return;
+          }
+
+          final paramsList = nonNullList.map((e) {
+            final path = e!.path;
+            return ImageCompressParams(
               repositoryType: RepositoryType.camera,
               imageData: path,
-            ));
-          },
-          multiple: (multiple) {
-            final nonNullList = multiple.fileBySensor.values
-                .where((element) => element != null)
-                .toList();
-
-            if (nonNullList.isEmpty) {
-              return;
-            }
-
-            final paramsList = nonNullList.map((e) {
-              final path = e!.path;
-              return ImageCompressParams(
-                repositoryType: RepositoryType.camera,
-                imageData: path,
-              );
-            }).toList();
-            params.addAll(paramsList);
-          },
-        );
-
-        final imageList = await Future.wait(
-          params.map(
-            (e) => getImageCompressed(e),
-          ),
-        );
-
-        final contentList = imageList.map(
-          (e) {
-            final content = ContentData(
-              extension: "jpg",
-              path: e.$2!,
-              data: e.$1,
-              metadata: capturingImageMetaData,
             );
-            return content;
-          },
-        ).toList();
+          }).toList();
+          params.addAll(paramsList);
+        },
+      );
 
-        _imageExport.allImages.addAll(contentList);
-        notifyListeners();
-      } else if (event.status == MediaCaptureStatus.failure) {
-        debugPrint("Failed to capture image: ${event.exception}");
-      }
+      final imageList = await Future.wait(
+        params.map(
+          (e) => CompressImageHelper(_compressionOptions).getImageCompressed(e),
+        ),
+      );
+
+      final contentList = imageList.map(
+        (e) {
+          final content = ContentData(
+            extension: "jpg",
+            path: e.$2!,
+            data: e.$1,
+            metadata: capturingImageMetaData,
+          );
+          return content;
+        },
+      ).toList();
+
+      _imageExport.allImages.addAll(contentList);
+      notifyListeners();
     } catch (e) {
       debugPrint("Failed to capture image: $e");
     }
@@ -188,7 +201,19 @@ class CameraViewModel with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> _setDefaultOrientations() async {
+    await SystemChrome.setPreferredOrientations(
+        _options.appsSupportedOrientations);
+  }
+
   void returnData(BuildContext context) async {
+    await _setDefaultOrientations();
     Navigator.pop(context, _imageExport);
+  }
+
+  @override
+  void dispose() {
+    _setDefaultOrientations();
+    super.dispose();
   }
 }

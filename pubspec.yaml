@@ -1,6 +1,6 @@
 name: image_provider
 description: Image provider package with support camera, gallery and file picker.
-version: 0.10.2
+version: 0.11.0
 homepage: https://github.com/CosmosExmo/image_provider
 
 publish_to: none
@@ -21,7 +21,7 @@ dependencies:
   camerawesome: ^2.1.0
 
   #Web
-  file_picker: ^9.0.2
+  file_picker: ^10.1.2
   permission_manager:
     git:
       url: "https://github.com/trailon/permission_manager.git"

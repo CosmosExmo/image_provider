@@ -5,6 +5,7 @@ class ImageProvider {
   final RepositoryTypeSelectionWidget? widget;
   final RepositoryType? repositoryType;
   final CameraViewOptions options;
+  final CompressionOptions compressionOptions;
   final ColorScheme? colorScheme;
 
   ImageProvider(
@@ -13,6 +14,7 @@ class ImageProvider {
     this.options = const CameraViewOptions(),
     this.repositoryType,
     this.colorScheme,
+    this.compressionOptions = const CompressionOptions(),
   }) : assert(widget != null || repositoryType != null,
             'No repository type selected or widget provided');
   ImageExport? _imageExport;
@@ -73,9 +75,7 @@ class ImageProvider {
       await permissionPanager.requestMedia(photos: true);
       await permissionPanager.requestMediaLocation();
 
-
       final ImagePicker picker = ImagePicker();
-
 
       final List<XFile> resultList = await picker.pickMultiImage(
         limit: maxImage,
@@ -83,13 +83,13 @@ class ImageProvider {
 
       final imageExport = ImageExport.gallery();
 
-      //imageExport.imageassets = resultList;
       final paramList = List.generate(
           resultList.length,
           (index) => ImageCompressParams(
               repositoryType: RepositoryType.gallery,
               imageData: resultList.elementAt(index)));
-      final compressedList = await getImageCompressedList(paramList);
+      final compressedList = await CompressImageHelper(compressionOptions)
+          .getImageCompressedList(paramList);
       for (var compressedImg in compressedList) {
         final content =
             ContentData(extension: "jpg", data: compressedImg, path: "");
@@ -101,7 +101,7 @@ class ImageProvider {
     }
   }
 
-  static Future<List<ContentData>> getCompressedImageList(
+  Future<List<ContentData>> getCompressedImageList(
       {required List<XFile> assetimgs}) async {
     List<ContentData> contentImages = [];
     final paramList = List.generate(
@@ -109,7 +109,8 @@ class ImageProvider {
         (index) => ImageCompressParams(
             repositoryType: RepositoryType.gallery,
             imageData: assetimgs.elementAt(index)));
-    final compressedList = await getImageCompressedList(paramList);
+    final compressedList = await CompressImageHelper(compressionOptions)
+        .getImageCompressedList(paramList);
     for (var compressedImg in compressedList) {
       final content =
           ContentData(extension: "jpg", data: compressedImg, path: "");
